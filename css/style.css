@@ -4,8 +4,8 @@ body {
 
 #container {
 	margin: 70px auto;
-	width: 500px;
-	height: 500px;
+	width: 450px;
+	height: 450px;
 
 	border: 1px dashed white;
 }
@@ -18,7 +18,7 @@ body {
 	border: 1px dashed red;
 }
 
-/*Create space between planes*/
+/*Create space between middle plane*/
 #container .plane:nth-child(2) {
 	margin: 5% auto;
 }
@@ -30,6 +30,7 @@ body {
 	width: 32%;
 
 	border: 1px solid yellow;
+	color: yellow;
 }
 
 .plane div:hover {
