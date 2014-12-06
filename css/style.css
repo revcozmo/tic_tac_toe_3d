@@ -2,6 +2,52 @@ body {
 	background: black;
 }
 
+
+/*For Start Menu section*/
+#start-menu {
+	border: 3px dashed red;
+	width: 600px;
+	height: 700px;
+	margin: 40px auto 0px auto;
+
+	color: white;
+	text-align: center;
+}
+
+#start-menu h1 {
+	
+}
+
+#input-player-name {
+	border: 1px solid white;
+}
+
+#input-player-name input {
+	margin: 0 auto 5% auto;
+}
+
+#player-icon {
+	height: 25%;
+	width: 90%;
+	margin: 5% auto 0 auto;
+	border: 3px solid yellow;
+}
+
+#player-icon img {
+	display: inline-block;
+	width: 75px;
+	margin: auto 10px;
+}
+
+#start-menu button {
+	margin: 5% auto 0px auto;
+}
+
+
+
+
+/*For gameBoard area*/
+
 #container {
 	margin: 70px auto;
 	width: 450px;
@@ -17,6 +63,8 @@ body {
 
 	border: 1px dashed red;
 }
+
+
 
 /*Create space between middle plane*/
 #container .plane:nth-child(2) {

@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-
-<html lang="en-US">
+<html lang="en-US" ng-app="ttt3DApp">
 	<head>
 		<meta charset="utf-8">
 
@@ -9,13 +8,41 @@
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/style.css">
 
+		<script src="js/angular.js" type="text/javascript"></script>
+		<script src="js/ttt3DApp.js" type="text/javascript"></script>
+		<script src="js/PlayT3DController.js" type="text/javascript"></script>
 	</head>
 
-	<body>
+	<body ng-controller='PlayT3DController as t3d'>
+		<!-- Start Menu -->
+		<main id="start-menu">
+			<h1>TIC TAC TOE<br/>3D</h1>
 
-		<div id="container">
+			<h3>Connect your pieces in a line in 3D space. <br/>
+			    Pieces are not allowed on blocks. <br/>
+			    Mines destroy any pieces in its path.
+			</h3>
+
+			<section id="input-player-name">
+				<h3>Enter Your Name:</h3>
+				<input ng-model="{{}}" type="text" placeholder="Player1" />
+			</section>
+
+			<section id="player-icon">
+				<h3>Chose Your Piece</h3>
+				<img src="images/death-star-2-icon.png" />
+				<img src="images/enterprise-D2-icon.png" />
+				<img src="images/kirby-ufo.png" />
+				<img src="images/kodos.png" />
+			</section>
+
+			<button ng-click="">PLAY</button>
+		</main>
+
+		<!-- For gameBoard area -->
+<!-- 		<div id="container">
 			<div class="plane">
-				<div class="plane_0">1<img src=""/></div>
+				<div class="plane_0">{{2-1+100}}<img src=""/></div>
 				<div class="plane_0">2<img src=""/></div>
 				<div class="plane_0">3<img src=""/></div>
 				<div class="plane_0">4<img src=""/></div>
@@ -50,7 +77,7 @@
 				<div class="plane_2">I<img src=""/></div>
 			</div>
 		</div>
-
+ -->
 
 		<script src="js/main.js" type="text/javascript"></script>
 	</body>
