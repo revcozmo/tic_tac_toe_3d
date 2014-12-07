@@ -52,6 +52,7 @@ body {
 	margin: 70px auto;
 	width: 450px;
 	height: 450px;
+	color: white;
 
 	border: 1px dashed white;
 }
@@ -71,16 +72,29 @@ body {
 	margin: 5% auto;
 }
 
+.plane {
+	border: 1px solid white;
+	text-align: center;
+}
+
+
 .plane div {
-	margin: 0;
+	margin: 0 auto;
 	display: inline-block;
-	height: 32%;
-	width: 32%;
+	height: 99%;
+	vertical-align: top;
 
 	border: 1px solid yellow;
 	color: yellow;
 }
 
-.plane div:hover {
+.plane div div {
+	border: 1px dashed green;
+	display: block;
+	width: 99%;
+	margin: auto 0;
+
+}
+.plane div div:hover {
 	background-color: #00A0E4;
 }

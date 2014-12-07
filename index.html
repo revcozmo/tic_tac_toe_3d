@@ -10,12 +10,14 @@
 
 		<script src="js/angular.js" type="text/javascript"></script>
 		<script src="js/ttt3DApp.js" type="text/javascript"></script>
+		<script src="js/GameSpace.js" type="text/javascript"></script>
+		<script src="js/GameAlgorithm.js"type="text/javascript"></script>
 		<script src="js/PlayT3DController.js" type="text/javascript"></script>
 	</head>
 
 	<body ng-controller='PlayT3DController as t3d'>
 		<!-- Start Menu -->
-		<main id="start-menu">
+<!-- 		<main id="start-menu">
 			<h1>TIC TAC TOE<br/>3D</h1>
 
 			<h3>Connect your pieces in a line in 3D space. <br/>
@@ -25,7 +27,7 @@
 
 			<section id="input-player-name">
 				<h3>Enter Your Name:</h3>
-				<input ng-model="{{}}" type="text" placeholder="Player1" />
+				<input type="text" placeholder="Player1" />
 			</section>
 
 			<section id="player-icon">
@@ -36,49 +38,23 @@
 				<img src="images/kodos.png" />
 			</section>
 
-			<button ng-click="">PLAY</button>
-		</main>
+			<button>PLAY</button>
+		</main> -->
+
 
 		<!-- For gameBoard area -->
-<!-- 		<div id="container">
-			<div class="plane">
-				<div class="plane_0">{{2-1+100}}<img src=""/></div>
-				<div class="plane_0">2<img src=""/></div>
-				<div class="plane_0">3<img src=""/></div>
-				<div class="plane_0">4<img src=""/></div>
-				<div class="plane_0">5<img src=""/></div>
-				<div class="plane_0">6<img src=""/></div>
-				<div class="plane_0">7<img src=""/></div>
-				<div class="plane_0">8<img src=""/></div>
-				<div class="plane_0">9<img src=""/></div>
-			</div>
-			
-			<div class="plane">
-				<div class="plane_1">a<img src=""/></div>
-				<div class="plane_1">b<img src=""/></div>
-				<div class="plane_1">c<img src=""/></div>
-				<div class="plane_1">d<img src=""/></div>
-				<div class="plane_1">e<img src=""/></div>
-				<div class="plane_1">f<img src=""/></div>
-				<div class="plane_1">g<img src=""/></div>
-				<div class="plane_1">h<img src=""/></div>
-				<div class="plane_1">i<img src=""/></div>
-			</div>
-			
-			<div class="plane">
-				<div class="plane_2">A<img src=""/></div>
-				<div class="plane_2">B<img src=""/></div>
-				<div class="plane_2">C<img src=""/></div>
-				<div class="plane_2">D<img src=""/></div>
-				<div class="plane_2">E<img src=""/></div>
-				<div class="plane_2">F<img src=""/></div>
-				<div class="plane_2">G<img src=""/></div>
-				<div class="plane_2">H<img src=""/></div>
-				<div class="plane_2">I<img src=""/></div>
-			</div>
-		</div>
- -->
+		<div id="container">
+			<div class="plane" ng-repeat="zPlane in t3d.activeSpace.theGameSpace">
+				<div ng-repeat="xRow in zPlane" 
+				     ng-style="{'width': t3d.activeSpace.toggleWidth()}">
+					<div ng-repeat="ySpace in xRow track by $index" 
+					     ng-style="{'height': t3d.activeSpace.toggleHeight()}"
+					     ng-click="t3d.activeSpace.change($parent.$parent.$index,
+														  $parent.$index,$index)">
+						{{xRow[$index]}}
+					</div>
+				</div>
 
-		<script src="js/main.js" type="text/javascript"></script>
+			</div>
 	</body>
 </html>
