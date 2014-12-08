@@ -37,6 +37,10 @@ function GameSpaceFunc(GameAlgorithm) {
 
 			this.CHECKER.update(this.theGameSpace)
 			this.CHECKER.checkXYPlane(this.currentZ, this.currentX, this.currentY);
+			this.CHECKER.checkYZPlane(this.currentZ, this.currentX, this.currentY);
+			this.CHECKER.checkXZPlane(this.currentZ, this.currentX, this.currentY);
+			this.CHECKER.checkDiagOnePlane(this.currentZ, this.currentX, this.currentY);
+			this.CHECKER.checkDiagTwoPlane(this.currentZ, this.currentX, this.currentY);
 		}
 
 
