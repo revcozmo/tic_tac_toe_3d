@@ -8,6 +8,7 @@ function GameAlgorithmFunc() {
 
 		// Initialize to gameSpace
 		this.checkingSpace		= gameSpace;
+		
 		// var ptsToConnect 	= pointsToConnect;
 		this.ptsToConnect = 3;
 		var boardLength = 3;
@@ -178,6 +179,7 @@ function GameAlgorithmFunc() {
 		//End of chkPosDiagonalLn
 		}
 
+
 		// Check 'neg diagonal' line. X point increments. Y point decrements
 		function chkNegDiagonalLn(pz, px, py) {
 			var spaceValue = 0;
@@ -231,8 +233,6 @@ function GameAlgorithmFunc() {
 			}	
 		//End of chkNegDiagonalLn	
 		}
-
-
 
 	// End of GameAlgorithm
 	}

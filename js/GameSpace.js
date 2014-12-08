@@ -4,7 +4,6 @@ angular
 
 GameSpaceFunc.$inject = ['GameAlgorithm'];
 
-
 function GameSpaceFunc(GameAlgorithm) {
 
 	var GameSpace = function(zSize, xSize, ySize) {
