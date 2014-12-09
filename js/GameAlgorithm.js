@@ -13,6 +13,8 @@ function GameAlgorithmFunc() {
 		this.ptsToConnect = 3;
 		var boardLength = 3;
 		
+		this.playerValue		= 1;
+
 		var zLength				= 3;
 		var xLength				= 3;
 		var yLength				= 3;
@@ -85,8 +87,7 @@ function GameAlgorithmFunc() {
 			for(travelX = px; travelX <= xLength -1 ; travelX++ ) {
 				spaceValue = this.checkingSpace[pz][travelX][py];
 				
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					// Set to begin check in opposite direction
 					travelX = xLength -1;
 				}
@@ -101,8 +102,7 @@ function GameAlgorithmFunc() {
 				if(travelX === xLength - 1) {
 					for(travelX = px -1 ; 0 <= travelX; travelX--) {
 						spaceValue = this.checkingSpace[pz][travelX][py];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							// Break this loop to stop check in opposite line.
 							travelX = -1;
 						}
@@ -132,8 +132,7 @@ function GameAlgorithmFunc() {
 			for(travelY = py; travelY <= yLength -1 ; travelY++ ) {
 				spaceValue = this.checkingSpace[pz][px][travelY];
 				
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelY = yLength -1;
 				}
 				else {
@@ -148,8 +147,7 @@ function GameAlgorithmFunc() {
 				if(travelY === yLength - 1) {
 					for(travelY = py -1 ; 0 <= travelY; travelY--) {
 						spaceValue = this.checkingSpace[pz][px][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelY = -1;
 						}
@@ -181,8 +179,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[pz][travelX][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelY = yLength -1;
 					travelX = xLength -1;
 				}
@@ -200,8 +197,7 @@ function GameAlgorithmFunc() {
 							0 <= travelY && 0 <= travelX; 
 								travelY--, travelX--) {
 						spaceValue = this.checkingSpace[pz][travelX][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelY = -1;
 							travelX = -1;
@@ -237,8 +233,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[pz][travelX][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelY = -1;
 					travelX = xLength -1;
 				}
@@ -256,8 +251,7 @@ function GameAlgorithmFunc() {
 							travelY <= yLength-1 && 0 <= travelX; 
 								travelY++, travelX--) {
 						spaceValue = this.checkingSpace[pz][travelX][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelY = yLength;
 							travelX = -1;
@@ -287,8 +281,7 @@ function GameAlgorithmFunc() {
 			for(travelZ = pz; travelZ <= zLength -1 ; travelZ++ ) {
 				spaceValue = this.checkingSpace[travelZ][px][py];
 				
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					// Set to begin check in opposite direction
 					travelZ = zLength -1;
 				}
@@ -303,8 +296,7 @@ function GameAlgorithmFunc() {
 				if(travelZ === zLength - 1) {
 					for(travelZ = pz -1 ; 0 <= travelZ; travelZ--) {
 						spaceValue = this.checkingSpace[travelZ][px][py];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							// Break this loop to stop check in opposite line.
 							travelZ = -1;
 						}
@@ -338,8 +330,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][px][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = -1;
 					travelY = yLength -1;
 				}
@@ -357,8 +348,7 @@ function GameAlgorithmFunc() {
 							travelZ <= zLength-1 && 0 <= travelY; 
 								travelZ++, travelY--) {
 						spaceValue = this.checkingSpace[travelZ][px][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = zLength;
 							travelY = -1;
@@ -393,8 +383,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][px][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = zLength - 1;
 					travelY = yLength - 1;
 				}
@@ -412,8 +401,7 @@ function GameAlgorithmFunc() {
 							0 <= travelZ && 0 <= travelY; 
 								travelZ--, travelY--) {
 						spaceValue = this.checkingSpace[travelZ][px][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = -1;
 							travelY = -1;
@@ -447,8 +435,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][travelX][py];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = -1;
 					travelX = xLength - 1;
 				}
@@ -466,8 +453,7 @@ function GameAlgorithmFunc() {
 							travelZ <= zLength - 1 && 0 <= travelX; 
 								travelZ++, travelX--) {
 						spaceValue = this.checkingSpace[travelZ][travelX][py];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = zLength;
 							travelX = -1;
@@ -501,8 +487,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][travelX][py];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = zLength -1;
 					travelX = xLength - 1;
 				}
@@ -520,8 +505,7 @@ function GameAlgorithmFunc() {
 							0 <= travelZ && 0 <= travelX; 
 								travelZ--, travelX--) {
 						spaceValue = this.checkingSpace[travelZ][travelX][py];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = -1;
 							travelX = -1;
@@ -555,8 +539,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = -1;
 					travelX = xLength - 1;
 					travelY	= -1;
@@ -575,8 +558,7 @@ function GameAlgorithmFunc() {
 							travelZ <= zLength-1 && 0 <= travelX && travelY <= yLength-1; 
 								travelZ++, travelX--, travelY++) {
 						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = zLength;
 							travelX = -1;
@@ -614,8 +596,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = zLength - 1;
 					travelX = xLength - 1;
 					travelY	= -1;
@@ -634,8 +615,7 @@ function GameAlgorithmFunc() {
 							0 <= travelZ && 0 <= travelX && travelY <= yLength-1; 
 								travelZ--, travelX--, travelY++) {
 						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = -1;
 							travelX = -1;
@@ -671,8 +651,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = zLength - 1;
 					travelX = xLength - 1;
 					travelY	= yLength -1;
@@ -691,8 +670,7 @@ function GameAlgorithmFunc() {
 							0 <= travelZ && 0 <= travelX && 0 <= travelY; 
 								travelZ--, travelX--, travelY--) {
 						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = -1;
 							travelX = -1;
@@ -728,8 +706,7 @@ function GameAlgorithmFunc() {
 			{
 				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
 			
-				if(spaceValue === null || spaceValue === 'block' 
-					|| spaceValue === 'bomb' || spaceValue === -1) {
+				if(spaceValue !== this.playerValue) {
 					travelZ = -1;
 					travelX = xLength - 1;
 					travelY	= yLength -1;
@@ -748,8 +725,7 @@ function GameAlgorithmFunc() {
 							travelZ <= zLength-1 && 0 <= travelX && 0 <= travelY; 
 								travelZ++, travelX--, travelY--) {
 						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue === null || spaceValue === 'block' 
-								|| spaceValue === 'bomb' || spaceValue === -1) {
+						if(spaceValue !== this.playerValue) {
 							//something
 							travelZ = zLength-1;
 							travelX = -1;
@@ -770,10 +746,8 @@ function GameAlgorithmFunc() {
 			}	
 		// End of chkD2D2Ln
 		}
-		
 
 	// End of GameAlgorithm
 	}
-
 	return GameAlgorithm;
 }

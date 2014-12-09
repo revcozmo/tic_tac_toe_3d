@@ -8,8 +8,5 @@ angular.module('ttt3DApp')
 		this.activeSpace = new GameSpace(3,3,3);
 
 		this.Player1 = new Player();
-		this.Player1.viewPlayerValue();
-		this.Player2 = new Player();
-		this.Player2.viewPlayerValue();
-		
+		this.Player2 = new Player();		
 	};

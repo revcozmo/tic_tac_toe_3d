@@ -14,6 +14,9 @@ function GameSpaceFunc(GameAlgorithm) {
 		this.xLength = xSize;
 		this.yLength = ySize;
 
+		this.totalSpaces;
+		var calcTotalSpaces = calcTotalSpaces;
+
 		this.currentX;
 		this.currentY;
 		this.currentZ;
@@ -41,6 +44,10 @@ function GameSpaceFunc(GameAlgorithm) {
 			this.CHECKER.checkXZPlane(this.currentZ, this.currentX, this.currentY);
 			this.CHECKER.checkDiagOnePlane(this.currentZ, this.currentX, this.currentY);
 			this.CHECKER.checkDiagTwoPlane(this.currentZ, this.currentX, this.currentY);
+		}
+
+		function calcTotalSpaces() {
+			this.totalSpaces = this.zLength * this.xLength * this.yLength;
 		}
 
 

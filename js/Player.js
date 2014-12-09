@@ -34,9 +34,9 @@ function PlayerFunc() {
 		this.updateTies		= updateTies;
 
 		// Debugging purposes
-		this.viewPlayerValue = function() {
-			console.log(playerValue)
-		}
+		// this.viewPlayerValue = function() {
+		// 	console.log(playerValue)
+		// }
 
 		// Initialize playerValue
 		this.initPlayerValue();
