@@ -4,750 +4,283 @@ angular
 
 function GameAlgorithmFunc() {
 
-	var GameAlgorithm = function(gameSpace, pointsToConnect) {
+	var GameAlgorithm = function(gameSpace, zSize, xSize, ySize, ptsToConnect) {
 
 		// Initialize to gameSpace
 		this.checkingSpace		= gameSpace;
 		
 		// var ptsToConnect 	= pointsToConnect;
-		this.ptsToConnect = 3;
-		var boardLength = 3;
-		
-		this.playerValue		= 1;
+		this.ptsToConnect = ptsToConnect;
 
-		var zLength				= 3;
-		var xLength				= 3;
-		var yLength				= 3;
+		var zLength				= zSize;
+		var xLength				= xSize;
+		var yLength				= ySize;
 
 		this.update				= update;
-
-		this.checkXYPlane 		= checkXYPlane;
-		this.chkHorizontalLn 	= chkHorizontalLn;
-		this.chkVerticalLn 		= chkVerticalLn;
-		this.chkPosDiagonalLn 	= chkPosDiagonalLn;
-		this.chkNegDiagonalLn 	= chkNegDiagonalLn;
-		
-		this.checkYZPlane 		= checkYZPlane;
-		this.chkYZVerticalLn 	= chkYZVerticalLn;
-		this.chkYZDiagOneLn 	= chkYZDiagOneLn;
-		this.chkYZDiagTwoLn 	= chkYZDiagTwoLn;
-
-		this.checkXZPlane		= checkXZPlane;
-		this.chkXZDiagOneLn 	= chkXZDiagOneLn;
-		this.chkXZDiagTwoLn 	= chkXZDiagTwoLn;
-
-		this.checkDiagOnePlane	= checkDiagOnePlane;
-		this.chkD1D1Ln			= chkD1D1Ln;
-		this.chkD1D2Ln			= chkD1D2Ln;
-
-		this.checkDiagTwoPlane	= checkDiagTwoPlane;
-		this.chkD2D1Ln			= chkD2D1Ln;
-		this.chkD2D2Ln			= chkD2D2Ln;
 
 		function update(space) {
 			this.checkingSpace = space;
 		}
 
-		function checkXYPlane(pz, px, py) {
-			this.chkHorizontalLn(pz, px, py);
-			this.chkVerticalLn(pz, px, py);
-			this.chkPosDiagonalLn(pz, px, py);
-			this.chkNegDiagonalLn(pz, px, py);
+		var checkSum 				= 'xxx';
+		this.checkLine 				= checkLine;
+		this.extractHorizontal 		= extractHorizontal;
+		this.extractVertical 		= extractVertical;
+		this.extractDiagonalOne		= extractDiagonalOne;
+		this.extractDiagonalTwo		= extractDiagonalTwo;
+		this.extractYZVert			= extractYZVert;
+		this.extractYZDiagOne		= extractYZDiagOne;
+		this.extractYZDiagTwo		= extractYZDiagTwo;
+		this.extractZXDiagOne		= extractZXDiagOne;
+		this.extractZXDiagTwo		= extractZXDiagTwo;
+		this.extractDiag1D1			= extractDiag1D1;
+		this.extractDiag1D2			= extractDiag1D2;
+		this.extractDiag2D1			= extractDiag2D1;
+		this.extractDiag2D2			= extractDiag2D2;
+
+
+		function checkLine(arr) {
+			var checkValue = "";
+
+			for(var i = 0; i < arr.length; i++) {
+				checkValue = checkValue + arr[i];
+			}
+
+			if(checkValue.indexOf(checkSum) !== -1)
+				console.log("Line Winner")
 		}
 
-		function checkYZPlane(pz, px, py) {
-			this.chkYZVerticalLn(pz, px, py);
-			this.chkYZDiagOneLn(pz, px, py);
-			this.chkYZDiagTwoLn(pz, px, py);
+		//Extract line vertical line in reference to placed piece
+		//Return an array containing values of that line
+		function extractVertical(pz, px, py) {
+			var theArr = [];
+			for(var y = 0; y < yLength; y++) {
+				theArr.push(this.checkingSpace[pz][px][y])
+			}
+			return theArr;
 		}
 
-		function checkXZPlane(pz, px, py) {
-			this.chkXZDiagOneLn(pz, px, py);
-			this.chkXZDiagTwoLn(pz, px, py);
+		//Extract line horizontal line in reference to placed piece
+		//Return an array containing values of that line
+		function extractHorizontal(pz, px, py) {
+			var theArr = [];
+			for(var x = 0; x < xLength; x++) {
+				theArr.push(this.checkingSpace[pz][x][py])
+			}
+			return theArr;		
 		}
 
-		function checkDiagOnePlane(pz, px, py) {
-			this.chkD1D1Ln(pz, px, py);
-			this.chkD1D2Ln(pz, px, py);
+		// Extract positive diagonal line in reference to placed piece
+		function extractDiagonalOne(pz, px, py) {
+			var theArr = [];
+			if(px <= py) {
+				var x = 0;		var y = py-px;
+			}
+			else {
+				var x = px-py;	var y = 0;
+			}
+
+			for(x, y; x < xLength && y < yLength; x++, y++) {
+				theArr.push(this.checkingSpace[pz][x][y])
+			}
+			return theArr;		
 		}
 
-		function checkDiagTwoPlane(pz, px, py) {
-			this.chkD2D1Ln(pz, px, py);
-			this.chkD2D2Ln(pz, px, py);
+		//Extract negative diagonal line in reference to placed piece
+		function extractDiagonalTwo(pz, px, py) {
+			var theArr = [];
+			var x;
+			var y;
+
+			if(px + py >= xLength) {
+				x = xLength -1;
+				y = py - (x-px);
+			}
+			else {
+				x = px + py;
+				y = 0;
+			}
+
+			for(x,y; 0 <= x && y < yLength; x--, y++) {
+				theArr.push(this.checkingSpace[pz][x][y])
+			}
+			return theArr;		
 		}
 
+		//Extract vertical line in YZ plane of placed piece
+		function extractYZVert(pz,px,py) {
+			var theArr = [];
 
-		function chkHorizontalLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelX;
-
-			// Check 'horizontal' line. Y-point stays constant
-			// Check in one direction of line.
-			for(travelX = px; travelX <= xLength -1 ; travelX++ ) {
-				spaceValue = this.checkingSpace[pz][travelX][py];
-				
-				if(spaceValue !== this.playerValue) {
-					// Set to begin check in opposite direction
-					travelX = xLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log(" Horizontal! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				if(travelX === xLength - 1) {
-					for(travelX = px -1 ; 0 <= travelX; travelX--) {
-						spaceValue = this.checkingSpace[pz][travelX][py];
-						if(spaceValue !== this.playerValue) {
-							// Break this loop to stop check in opposite line.
-							travelX = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log(" Horizontal " + checkSum)
-							}
-						}
-					}
-					// Break for loop to stop overall check
-					travelX = xLength;
-				}
-			//end of for loop horizontal line		
-			}	
-
+			var theArr = [];
+			for(var z = 0; z < zLength; z++) {
+				theArr.push(this.checkingSpace[z][px][py])
+			}
+			return theArr;
 		}
 
+		//Extract positive-sloped diagonal line in YZ plane of placed piece
+		function extractYZDiagOne(pz, px, py) {
+			var theArr = [];
+			var z;
+			var y;
 
-		// Check 'vertical' line. X-point stays constant
-		function chkVerticalLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelY;
-		
-			// Check in one direction of line.
-			for(travelY = py; travelY <= yLength -1 ; travelY++ ) {
-				spaceValue = this.checkingSpace[pz][px][travelY];
-				
-				if(spaceValue !== this.playerValue) {
-					travelY = yLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log(" Vertical! " + checkSum)
-					}
-				}
+			if(pz <= py) {
+				var z = 0;		var y = py-pz;
+			}
+			else {
+				var z = pz-py;	var y = 0;
+			}
 
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelY === yLength - 1) {
-					for(travelY = py -1 ; 0 <= travelY; travelY--) {
-						spaceValue = this.checkingSpace[pz][px][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelY = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log(" Vertical!" + checkSum)
-							}
-						}
-					}
-					travelY = yLength;
-				}
-			//end of for loop vertical line		
-			}	
-		//End of chkVerticalLn	
+			for(z, y; z < zLength && y < yLength; z++, y++) {
+				theArr.push(this.checkingSpace[z][px][y])
+			}
+			return theArr;
 		}
 
-		// Check 'positive diagonal' line. X and y points increment
-		function chkPosDiagonalLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelX;
-			var travelY;
+		//Extract negatively-sloped diagonal line in YZ plane of placed piece
+		function extractYZDiagTwo(pz, px, py) {
+			var theArr = [];
+			var z;
+			var y;
 
-			// Check in one direction of line.
-			for(travelY = py, travelX = px; 
-						travelY <= yLength -1 && travelX <= xLength -1; 
-						travelY++, travelX++) 
-			{
-				spaceValue = this.checkingSpace[pz][travelX][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelY = yLength -1;
-					travelX = xLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("Positive Diagonal! " + checkSum)
-					}
-				}
+			if(pz + py >= yLength) {
+				y = yLength -1;
+				z = pz - (y-py);
+			}
+			else {
+				z = 0;
+				y = pz + py;
+			}
 
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelY === yLength - 1 || travelX === xLength -1) {
-					for(travelY = py -1, travelX = px -1; 
-							0 <= travelY && 0 <= travelX; 
-								travelY--, travelX--) {
-						spaceValue = this.checkingSpace[pz][travelX][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelY = -1;
-							travelX = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("Positive Diagonal! " + checkSum)
-							}
-						}
-					}
-					travelY = yLength;
-					travelX = xLength;
-				}
-			//end of for loop positive diagonal line		
-			}	
-
-		//End of chkPosDiagonalLn
+			for(z,y; z < zLength && 0 <= y; z++, y--) {
+				theArr.push(this.checkingSpace[z][px][y])
+			}
+			return theArr;
 		}
 
+		//Extract positively-sloped diagonal line in ZX plane of placed piece
+		function extractZXDiagOne(pz, px, py) {
+			var theArr = [];
+			var z;
+			var x;
 
-		// Check 'neg diagonal' line. X point increments. Y point decrements
-		function chkNegDiagonalLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelX;
-			var travelY;
+			if(pz <= px) {
+				var z = 0;		var x = px-pz;
+			}
+			else {
+				var z = pz-px;	var x = 0;
+			}
 
-			// Check in one direction of line.
-			for(travelY = py, travelX = px; 
-						0<=travelY && travelX <= xLength -1; 
-						travelY--, travelX++) 
-			{
-				spaceValue = this.checkingSpace[pz][travelX][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelY = -1;
-					travelX = xLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("Negative Diagonal! " + checkSum)
-					}
-				}
+			for(z, x; z < zLength && x < xLength; z++, x++) {
+				theArr.push(this.checkingSpace[z][x][py])
+			}
+			return theArr;
+		}
 
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelY === -1 || travelX === xLength -1) {
-					for(travelY = py +1, travelX = px -1; 
-							travelY <= yLength-1 && 0 <= travelX; 
-								travelY++, travelX--) {
-						spaceValue = this.checkingSpace[pz][travelX][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelY = yLength;
-							travelX = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("Negative Diagonal! " + checkSum)
-							}
-						}
-					}
-					travelY = -1;
-					travelX = xLength;
+		//Extract negatively-sloped diagonal line in ZX plane of placed piece
+		function extractZXDiagTwo(pz, px, py) {
+			var theArr = [];
+			var z;
+			var x;
+
+			if(pz + px >= xLength) {
+				x = xLength -1;
+				z = pz - (x-px);
+			}
+			else {
+				x = pz + px;
+				z = 0;
+			}
+
+			for(z,x; z < zLength && 0 <= x; z++, x--) {
+				theArr.push(this.checkingSpace[z][x][py])
+			}
+			return theArr;	
+		}
+
+		// Extract one diagonal from first diagonal plane
+		function extractDiag1D1(pz, px, py) {
+			var theArr = [];
+			var z; 	var x; 	 var y;
+
+			z = pz; x = px; y = py;
+			var i = z; 	var j = x; 	var k = y;
+			// Find beginning of line
+			for(i, j, k;  0 <= i && 0 <= j && 0 <= k; i--, j--, k--) {
+				if(0 <= i && 0 <= j && 0 <= k) {
+					z = i;  	x = j;		y = k;
 				}
-			//end of for loop negative diagonal line		
-			}	
-		//End of chkNegDiagonalLn	
+			}
+			// Extract line
+			for(z, x, y; z < zLength && x < xLength && y < yLength; z++, x++, y++) {
+				theArr.push(this.checkingSpace[z][x][y])
+			}
+			return theArr;	
 		}
 
 
-		function chkYZVerticalLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
+		// Extract second diagonal from first diagonal plane
+		function extractDiag1D2(pz, px, py) {
+			var theArr = [];
+			var z; 	var x; 	 var y;
 
-			// Check in one direction of line.
-			for(travelZ = pz; travelZ <= zLength -1 ; travelZ++ ) {
-				spaceValue = this.checkingSpace[travelZ][px][py];
-				
-				if(spaceValue !== this.playerValue) {
-					// Set to begin check in opposite direction
-					travelZ = zLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("YZ Line! " + checkSum)
-					}
-				}
+			z = pz; x = px; y = py;
+			var i = z; 	var j = x; 	var k = y;
 
-				// Check in opposite direction
-				if(travelZ === zLength - 1) {
-					for(travelZ = pz -1 ; 0 <= travelZ; travelZ--) {
-						spaceValue = this.checkingSpace[travelZ][px][py];
-						if(spaceValue !== this.playerValue) {
-							// Break this loop to stop check in opposite line.
-							travelZ = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("YZ Line!" + checkSum)
-							}
-						}
-					}
-					// Break for loop to stop overall check
-					travelZ = zLength;
+			// Find beginning of line
+			for(i, j, k;  0 <= i && j < xLength && k < yLength; i--, j++, k++) {
+				if(0 <= i && j < xLength && k < yLength) {
+					z = i;  	x = j;		y = k;
 				}
-			//end of first for loop		
-			}	
-		//End of chkYZVerticalLn
+			}
+			// Extract line
+			for(z, x, y; z < zLength && 0 <= x && 0 <= y; z++, x--, y--) {
+				theArr.push(this.checkingSpace[z][x][y])
+			}
+			return theArr;	
 		}
 
+		// Extract first diagonal from second diagonal plane
+		function extractDiag2D1(pz, px, py) {
+			var theArr = [];
+			var z; 	var x; 	 var y;
 
-		function chkYZDiagOneLn(pz, px, py) { 
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelY;
-
-			// Z decrements.  Y increments
-			// Check in one direction of line.
-			for(travelZ = pz, travelY = py; 
-						0<=travelZ && travelY <= yLength -1; 
-						travelZ--, travelY++) 
-			{
-				spaceValue = this.checkingSpace[travelZ][px][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = -1;
-					travelY = yLength -1;
+			z = pz; x = px; y = py;
+			var i = z; 	var j = x; 	var k = y;
+			// Find beginning of line
+			for(i, j, k;  0 <= i && j < xLength && 0 <= k; i--, j++, k--) {
+				if(0 <= i && j < xLength && 0 <= k) {
+					z = i;  	x = j;		y = k;
 				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("YZ Diag ONE! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === -1 || travelY === yLength -1) {
-					for(travelZ = pz +1, travelY = py -1; 
-							travelZ <= zLength-1 && 0 <= travelY; 
-								travelZ++, travelY--) {
-						spaceValue = this.checkingSpace[travelZ][px][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = zLength;
-							travelY = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("YZ Diag ONE! " + checkSum)
-							}
-						}
-					}
-					travelZ = -1;
-					travelY = yLength;
-				}
-			//end of first for loop
-			}	
-
-		//End of chkYZDiagOneLn
+			}
+			// Extract line
+			for(z, x, y; z < zLength && 0 <= x && y < yLength; z++, x--, y++) {
+				theArr.push(this.checkingSpace[z][x][y])
+			}
+			return theArr;	
 		}
 
-		function chkYZDiagTwoLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelY;
+		// Extract second diagonal from second diagonal plane
+		function extractDiag2D2(pz, px, py) {
+			var theArr = [];
+			var z; 	var x; 	 var y;
 
-			// Z and Y increments
-			// Check in one direction of line.
-			for(travelZ = pz, travelY = py; 
-						travelZ <= zLength && travelY <= yLength -1; 
-						travelZ++, travelY++) 
-			{
-				spaceValue = this.checkingSpace[travelZ][px][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = zLength - 1;
-					travelY = yLength - 1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("YZ Diag TWO! " + checkSum)
-					}
-				}
+			z = pz; x = px; y = py;
 
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === zLength -1  || travelY === yLength -1) {
-					for(travelZ = pz -1, travelY = py -1; 
-							0 <= travelZ && 0 <= travelY; 
-								travelZ--, travelY--) {
-						spaceValue = this.checkingSpace[travelZ][px][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = -1;
-							travelY = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("YZ Diag TWO! " + checkSum)
-							}
-						}
-					}
-					travelZ = zLength;
-					travelY = yLength;
+			var i = z; 	var j = x; 	var k = y;
+			// Find beginning of line
+			for(i, j, k;  0 <= i && 0 <= j && k < yLength; i--, j--, k++) {
+				if(0 <= i && 0 <= j && k < yLength) {
+					z = i;  	x = j;		y = k;
 				}
-			//end of first for loop
-			}	
-		//End of chkYZDiagonTwoLn
+			}
+			// Extract line
+			for(z, x, y; z < zLength && x < xLength && 0 <= y; 	z++, x++, y--) {
+				theArr.push(this.checkingSpace[z][x][y])
+			}
+			return theArr;	
 		}
 
-		function chkXZDiagOneLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelX;
-
-			// Z decrements and X increments
-			// Check in one direction of line.
-			for(travelZ = pz, travelX = px; 
-						0 <= travelZ  && travelX <= xLength -1; 
-						travelZ--, travelX++) 
-			{
-				spaceValue = this.checkingSpace[travelZ][travelX][py];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = -1;
-					travelX = xLength - 1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("XZ Diag ONE! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === -1  || travelX === xLength -1) {
-					for(travelZ = pz + 1, travelX = px -1; 
-							travelZ <= zLength - 1 && 0 <= travelX; 
-								travelZ++, travelX--) {
-						spaceValue = this.checkingSpace[travelZ][travelX][py];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = zLength;
-							travelX = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("XZ Diag ONE! " + checkSum)
-							}
-						}
-					}
-					travelZ = -1;
-					travelX = xLength;
-				}
-			//end of first for loop
-			}	
-		//End of chkXZDiagOneLn
-		}
-
-		function chkXZDiagTwoLn(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelX;
-
-			// Z and X increments
-			// Check in one direction of line.
-			for(travelZ = pz, travelX = px; 
-						travelZ <= zLength -1 && travelX <= xLength -1; 
-						travelZ++, travelX++) 
-			{
-				spaceValue = this.checkingSpace[travelZ][travelX][py];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = zLength -1;
-					travelX = xLength - 1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("XZ Diag TWO! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === zLength -1  || travelX === xLength -1) {
-					for(travelZ = pz - 1, travelX = px -1; 
-							0 <= travelZ && 0 <= travelX; 
-								travelZ--, travelX--) {
-						spaceValue = this.checkingSpace[travelZ][travelX][py];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = -1;
-							travelX = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("XZ Diag TWO! " + checkSum)
-							}
-						}
-					}
-					travelZ = zLength;
-					travelX = xLength;
-				}
-			//end of first for loop
-			}				
-		//End of chkXZDiagTwoLn
-		}
-
-		function chkD1D1Ln(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelX;
-			var travelY;
-
-			// Z and Y decrements. X increments
-			for(travelZ = pz, travelX = px, travelY = py; 
-						0 <= travelZ && travelX <= xLength -1 && 0 <= travelY; 
-						travelZ--, travelX++, travelY--) 
-			{
-				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = -1;
-					travelX = xLength - 1;
-					travelY	= -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("DiagOne Line One! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === -1  || travelX === xLength -1 || travelY === -1) {
-					for(travelZ = pz + 1, travelX = px -1, travelY = py + 1; 
-							travelZ <= zLength-1 && 0 <= travelX && travelY <= yLength-1; 
-								travelZ++, travelX--, travelY++) {
-						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = zLength;
-							travelX = -1;
-							travelY = yLength;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("DiagOne Line TWO! " + checkSum)
-							}
-						}
-					}
-					travelZ = -1;
-					travelX = xLength;
-					travelY = -1;
-				}
-			//end of first for loop
-			}				
-		//End of chkD1D1Ln	
-		}
-
-
-		
-		function chkD1D2Ln(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelX;
-			var travelY;
-
-			// Z and X increments. Y decrements
-			for(travelZ = pz, travelX = px, travelY = py; 
-						travelZ <= zLength -1 && travelX <= xLength -1 && 0 <= travelY; 
-						travelZ++, travelX++, travelY--) 
-			{
-				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = zLength - 1;
-					travelX = xLength - 1;
-					travelY	= -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("DiagOne Line Two! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === zLength-1  || travelX === xLength -1 || travelY === -1) {
-					for(travelZ = pz - 1, travelX = px -1, travelY = py + 1; 
-							0 <= travelZ && 0 <= travelX && travelY <= yLength-1; 
-								travelZ--, travelX--, travelY++) {
-						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = -1;
-							travelX = -1;
-							travelY = yLength;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("DiagOne Line TWO! " + checkSum)
-							}
-						}
-					}
-					travelZ = zLength;
-					travelX = xLength;
-					travelY = -1;
-				}
-			//end of first for loop
-			}							
-		// End of chkD1D2Ln
-		}
-
-		function chkD2D1Ln(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelX;
-			var travelY;
-
-			// Z, X, and Y increment.
-			for(travelZ = pz, travelX = px, travelY = py; 
-					travelZ <= zLength -1 && travelX <= xLength -1 && travelY <= yLength-1; 
-						travelZ++, travelX++, travelY++) 
-			{
-				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = zLength - 1;
-					travelX = xLength - 1;
-					travelY	= yLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("DiagTwo Line One! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === zLength-1  || travelX === xLength -1 || travelY === yLength-1) {
-					for(travelZ = pz - 1, travelX = px -1, travelY = py - 1; 
-							0 <= travelZ && 0 <= travelX && 0 <= travelY; 
-								travelZ--, travelX--, travelY--) {
-						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = -1;
-							travelX = -1;
-							travelY = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("DiagTwo Line one! " + checkSum)
-							}
-						}
-					}
-					travelZ = zLength;
-					travelX = xLength;
-					travelY = yLength;
-				}
-			//end of first for loop
-			}	
-		//End of chkD2D1Ln	
-		}
-		
-		function chkD2D2Ln(pz, px, py) {
-			var spaceValue = 0;
-			var checkSum = 0;
-			var travelZ;
-			var travelX;
-			var travelY;
-
-			// Z decrements. X and Y increment.
-			for(travelZ = pz, travelX = px, travelY = py; 
-					0 <= travelZ && travelX <= xLength -1 && travelY <= yLength-1; 
-						travelZ--, travelX++, travelY++) 
-			{
-				spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-			
-				if(spaceValue !== this.playerValue) {
-					travelZ = -1;
-					travelX = xLength - 1;
-					travelY	= yLength -1;
-				}
-				else {
-					checkSum += spaceValue;
-					if(checkSum === this.ptsToConnect) {
-						console.log("DiagTwo Line Two! " + checkSum)
-					}
-				}
-
-				// Check in opposite direction
-				// Check when reached one side
-				if(travelZ === -1  || travelX === xLength -1 || travelY === yLength-1) {
-					for(travelZ = pz + 1, travelX = px -1, travelY = py - 1; 
-							travelZ <= zLength-1 && 0 <= travelX && 0 <= travelY; 
-								travelZ++, travelX--, travelY--) {
-						spaceValue = this.checkingSpace[travelZ][travelX][travelY];
-						if(spaceValue !== this.playerValue) {
-							//something
-							travelZ = zLength-1;
-							travelX = -1;
-							travelY = -1;
-						}
-						else {
-							checkSum += spaceValue;
-							if(checkSum === this.ptsToConnect) {
-								console.log("DiagTwo Line TWO! " + checkSum)
-							}
-						}
-					}
-					travelZ = -1;
-					travelX = xLength;
-					travelY = yLength;
-				}
-			//end of first for loop
-			}	
-		// End of chkD2D2Ln
-		}
-
-	// End of GameAlgorithm
-	}
+	}// End of GameAlgorithm
 	return GameAlgorithm;
 }

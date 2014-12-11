@@ -45,13 +45,14 @@
 
 		<!-- For gameBoard area -->
 		<div id="container">
-			<div class="plane" ng-repeat="zPlane in t3d.activeSpace.theGameSpace">
-				<div ng-repeat="xRow in zPlane" 
+			<div class="plane" ng-repeat="zPlane in t3d.activeSpace.theGameSpace track by $index">
+				<div ng-repeat="xRow in zPlane track by $index" 
 				     ng-style="{'width': t3d.activeSpace.toggleWidth()}">
 					<div ng-repeat="ySpace in xRow track by $index" 
 					     ng-style="{'height': t3d.activeSpace.toggleHeight()}"
 					     ng-click="t3d.activeSpace.change($parent.$parent.$index,
 														  $parent.$index, $index)">
+						<!-- {{$parent.$parent.$index}}{{$parent.$index}}{{$index}} -->
 						{{xRow[$index]}}
 					</div>
 				</div>
