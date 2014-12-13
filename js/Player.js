@@ -15,7 +15,8 @@ function Player($firebase) {
 		self.checkPlayer2 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player2"))
 								.$asObject();
 
-		self.currentPlayer
+		self.thisPlayer;
+		self.otherPlayer;
 
 		// List of functions to initialize Firebase data of player
 		self.initPlayer1FB 	= initPlayer1FB;
@@ -38,19 +39,20 @@ function Player($firebase) {
 		self.checkPlayer.$loaded(function() {
 			if(self.checkPlayer.name === undefined) {
 
-				self.currentPlayer = initPlayer1FB();
+				self.thisPlayer = initPlayer1FB();
+				self.otherPlayer = self.checkPlayer2;
 			}
-
-			self.checkPlayer2.$loaded(function() {
+			else {
 				if(self.checkPlayer.name !== undefined)
-					self.currentPlayer = initPlayer2FB();
-			});
+					self.thisPlayer = initPlayer2FB();
+					self.otherPlayer = self.checkPlayer;
+			};
 
 		});
 
 		function initPlayer1FB() {
 			self.checkPlayer.name = "";
-			self.checkPlayer.playerID = playerID;
+			self.checkPlayer.playerID = numPlayers;
 			self.checkPlayer.playerValue =  "x";
 			self.checkPlayer.playerTurn = false;
 			self.checkPlayer.wins =  0;
@@ -63,7 +65,7 @@ function Player($firebase) {
 
 		function initPlayer2FB() {
 			self.checkPlayer2.name = "";
-			self.checkPlayer2.playerID = playerID;
+			self.checkPlayer2.playerID = numPlayers;
 			self.checkPlayer2.playerValue =  "o";
 			self.checkPlayer2.playerTurn = false;
 			self.checkPlayer2.wins =  0;

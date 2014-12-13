@@ -50,15 +50,39 @@ body {
 /*For gameBoard area*/
 
 #container {
-	margin: 70px auto;
+	width: 950px;
+	margin: 40px auto 0px auto;
+}
+
+#player1, #player2 {
+	color: white;
+	width: 15%;
+	padding: 10px;
+	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+}
+
+#player1 { 
+	border: 2px dashed blue; 
+}
+
+#player2 { 
+	border: 2px dashed white; 
+}
+
+
+#gameboard {
+	margin: 0 75px 0 75px;
 	width: 450px;
 	height: 450px;
 	color: white;
+	display: inline-block;
 
 	border: 1px dashed white;
 }
 
-#container .plane {
+#gameboard .plane {
 	height: 30%;
 	width: 100%;
 	transform: skew(-35deg, 0deg);
@@ -69,7 +93,7 @@ body {
 
 
 /*Create space between middle plane*/
-#container .plane:nth-child(2) {
+#gameboard .plane:nth-child(2) {
 	margin: 5% auto;
 }
 

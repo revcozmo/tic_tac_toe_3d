@@ -13,13 +13,16 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		self.lobby 				= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby"))
 									.$asObject();
 
-		// List of functions
+		// List of functions for Start Menu
 		self.toggleGameFull		= toggleGameFull;
 		self.updatePlayer 		= updatePlayer;
+		self.startGame 			= startGame;
+ 		// self.deletePlayer 		= deletePlayer;
+
+ 		// List of functions for Game Board
+ 		
 
 		self.gameFull 			= false;
-		self.currentGame 		= [];
-
 
 
 		// When Firebase data is loaded
@@ -40,9 +43,27 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 
 		function updatePlayer() {
-			self.playerMe.currentPlayer.$save();
+			self.playerMe.thisPlayer.$save();
 			console.log("clicked")
 		}
+
+		// Ran when Play button is clicked
+		function startGame() {
+		console.log("clickedstart")	
+			if(self.playerMe.thisPlayer.playerID > self.playerMe.otherPlayer.playerID) {
+				self.playerMe.thisPlayer.playerTurn = true;
+				self.playerMe.thisPlayer.$save();
+			}
+			else {
+				self.playerMe.otherPlayer.playerTurn = true;
+				self.playerMe.otherPlayer.$save();
+			}
+		}
+
+		// function deletePlayer() {
+		// 	self.playerMe.currentPlayer.$remove();
+		// 	self.playerMe.currentPlayer.$save();
+		// }
 
 		function toggleGameFull() {
 			if(self.gameFull)
