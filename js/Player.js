@@ -1,51 +1,85 @@
 angular
 	.module('ttt3DApp')
-	.factory('Player', PlayerFunc)
+	.factory('Player', Player)
 
-function PlayerFunc() {
+Player.$inject = ['$firebase']
 
-	// In the tictactoe sense, 1 is 'O' and -1 is 'X'.
-	var PLAYER_VALUES = [1, -1];
-
-	// This keeps tracks the number of Player objects that
-	// have been instantiated
-	var numPlayerObjs = 0;
+function Player($firebase) {
 	
-	var Player = function() {
-		// Increment numPlayerObjs when a Player object is created.
-		numPlayerObjs += 1;
+	var Player = function(numPlayers) {
 
-		var playerName;
-		var	playerValue;
-		var playerIcon;
-		var playerTurn		= false;
-		var wins			= 0;
-		var losses			= 0;
-		var ties			= 0;
+		var self = this;
+
+		self.checkPlayer 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player"))
+								.$asObject();
+		self.checkPlayer2 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player2"))
+								.$asObject();
+
+		self.currentPlayer
+
+		// List of functions to initialize Firebase data of player
+		self.initPlayer1FB 	= initPlayer1FB;
+		self.initPlayer2FB	= initPlayer2FB;
 
 
-		this.updatePlayerName = updatePlayerName;
-		this.initPlayerValue  = initPlayerValue;
-		this.updateIcon		= updateIcon;
-		this.toggleTurn		= toggleTurn;
-		this.getPlayerValue	= getPlayerValue;
-		this.updateWins		= updateWins;
-		this.updateLosses	= updateLosses;
-		this.updateTies		= updateTies;
 
-		// Debugging purposes
-		// this.viewPlayerValue = function() {
-		// 	console.log(playerValue)
-		// }
+		// List of other functions
+		self.updatePlayerName = updatePlayerName;
+		self.updateIcon		= updateIcon;
+		self.toggleTurn		= toggleTurn;
+		self.getPlayerValue	= getPlayerValue;
+		self.updateWins		= updateWins;
+		self.updateLosses	= updateLosses;
+		self.updateTies		= updateTies;
 
-		// Initialize playerValue
-		this.initPlayerValue();
+
+
+		// Create player1 or player 2 data
+		self.checkPlayer.$loaded(function() {
+			if(self.checkPlayer.name === undefined) {
+
+				self.currentPlayer = initPlayer1FB();
+			}
+
+			self.checkPlayer2.$loaded(function() {
+				if(self.checkPlayer.name !== undefined)
+					self.currentPlayer = initPlayer2FB();
+			});
+
+		});
+
+		function initPlayer1FB() {
+			self.checkPlayer.name = "";
+			self.checkPlayer.playerID = playerID;
+			self.checkPlayer.playerValue =  "x";
+			self.checkPlayer.playerTurn = false;
+			self.checkPlayer.wins =  0;
+			self.checkPlayer.losses = 0;
+			self.checkPlayer.ties =  0;
+
+			self.checkPlayer.$save();
+			return self.checkPlayer;
+		}
+
+		function initPlayer2FB() {
+			self.checkPlayer2.name = "";
+			self.checkPlayer2.playerID = playerID;
+			self.checkPlayer2.playerValue =  "o";
+			self.checkPlayer2.playerTurn = false;
+			self.checkPlayer2.wins =  0;
+			self.checkPlayer2.losses = 0;
+			self.checkPlayer2.ties =  0;
+
+			self.checkPlayer2.$save();
+			return self.checkPlayer2;
+		}
+
+
+
+
+
 
 		function updatePlayerName(name) { playerName = name; }
-
-		function initPlayerValue() {
-			playerValue = PLAYER_VALUES[numPlayerObjs -1];
-		}
 
 		function updateIcon(icon) 		{ playerIcon = icon; }
 

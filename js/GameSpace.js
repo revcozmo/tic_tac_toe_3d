@@ -2,34 +2,48 @@ angular
 	.module('ttt3DApp')
 	.factory('GameSpace', GameSpaceFunc)
 
-GameSpaceFunc.$inject = ['GameAlgorithm'];
+GameSpaceFunc.$inject = ['GameAlgorithm', '$firebase'];
 
-function GameSpaceFunc(GameAlgorithm) {
+function GameSpaceFunc(GameAlgorithm, $firebase) {
 
 	var GameSpace = function(zSize, xSize, ySize) {
-		// Variable that'll hold the 3D array
-		this.theGameSpace = [];
+		// A Firebase object that'll hold the 3D array
+		// Later, this.  ftheGameSpace.gameSpace will be the property
+		// that holds the 3D array
+		this.theGameSpace;
 
-		this.zLength = zSize;
-		this.xLength = xSize;
-		this.yLength = ySize;
+		// Method to create FireBase object
+		this.makeGameSpaceFB = makeGameSpaceFB;
 
-		this.totalSpaces = this.zLength * this.xLength * this.yLength;
-		var calcTotalSpaces = calcTotalSpaces;
+		// Dimensions of 3D board and number of spaces
+		var zLength 		 = zSize;
+		var xLength			 = xSize;
+		var yLength 		 = ySize;
+		var totalSpaces;
 
 		this.create3DArray 	 = create3DArray;
-		// this.createMatrix 	 = createMatrix;
-		this.initToNull		 = initToNull;
-		this.change			 = change;
+		this.initToEmptyStr	 = initToEmptyStr;
+		this.clearSpace		 = clearSpace;
+
+		this.calcTotalSpaces 	= calcTotalSpaces;
+		this.change			 	= change;
+
+		// Change size of boxes depending on dimensions. In HTML/CSS
+		this.toggleWidth 	 = toggleWidth;
+		this.toggleHeight    = toggleHeight;
 
 		// Create the game space when object is instantiated
-		// this.theGameSpace = this.createMatrix(this.xLength, this.yLength, "x");
-		this.theGameSpace = this.create3DArray();
-		this.theGameSpace = this.initToNull(this.theGameSpace);
+		this.theGameSpace = this.makeGameSpaceFB();
+		var tempArr		  = this.create3DArray();
+		tempArr		  	  = this.initToEmptyStr(tempArr);
+		this.theGameSpace.gameSpace = tempArr;
+		this.theGameSpace.$save();
+		
+		totalSpaces 	  = this.calcTotalSpaces();
 
 		// Instantiate Game Algorithm
-		this.CHECKER	  = new GameAlgorithm(this.theGameSpace, this.zLength,
-												this.xLength, this.yLength, 3);
+		this.CHECKER	  = new GameAlgorithm(this.theGameSpace.gameSpace, zLength,
+												xLength, yLength, 3);
 	
 		// Test of gathering indexes from angular 
 		function change(z,x,y) {
@@ -37,22 +51,19 @@ function GameSpaceFunc(GameAlgorithm) {
 			this.currentZ = z;
 			this.currentX = x;
 			this.currentY = y;
-			this.theGameSpace[z][x][y] = 'x';
+			this.theGameSpace.gameSpace[z][x][y] = 'x';
+			this.theGameSpace.$save();
 
-			this.CHECKER.update(this.theGameSpace)
+			this.CHECKER.update(this.theGameSpace.gameSpace)
 
-			//Add GameAlgorithm checking functions here
-			this.CHECKER.checkLine(
-				this.CHECKER.extractHorizontal(z, x, y));
+			// //Add GameAlgorithm checking functions here
+			this.CHECKER.checkLine(this.CHECKER.extractHorizontal(z, x, y));
 			
-			this.CHECKER.checkLine(
-				this.CHECKER.extractVertical(z, x, y));
+			this.CHECKER.checkLine(this.CHECKER.extractVertical(z, x, y));
 
-			this.CHECKER.checkLine(
-				this.CHECKER.extractDiagonalOne(z, x, y));
+			this.CHECKER.checkLine(this.CHECKER.extractDiagonalOne(z, x, y));
 
-			this.CHECKER.checkLine(
-				this.CHECKER.extractDiagonalTwo(z, x, y));
+			this.CHECKER.checkLine(this.CHECKER.extractDiagonalTwo(z, x, y));
 
 			this.CHECKER.checkLine(this.CHECKER.extractYZVert(z,x,y));
 
@@ -73,32 +84,66 @@ function GameSpaceFunc(GameAlgorithm) {
 			this.CHECKER.checkLine(this.CHECKER.extractDiag2D2(z,x,y));
 		}
 
-		function calcTotalSpaces() {
-			this.totalSpaces = this.zLength * this.xLength * this.yLength;
+		function makeGameSpaceFB() {
+			var ref = new Firebase("https://t33d.firebaseio.com/GameSpace");	
+			var theGameSpace = $firebase(ref).$asObject();
+
+			return theGameSpace;
 		}
 
-
-		this.toggleWidth = function() {
-			return (Math.floor(100 / this.xLength) - 1) + '%'; 
-		}
-
-		this.toggleHeight = function() {
-			return (Math.floor(100 / this.yLength) - 1) + '%';
-		}
-
-		// // Create 3D Array to desired dimensions
+		// Create 3D Array to desired dimensions
 		function create3DArray() {
   			var threeDArray = [];
 
-  			for (var i=0; i < this.zLength; i++) {
+  			for (var i=0; i < zLength; i++) {
 			     threeDArray[i] = [];
 
-			     for(var j=0; j < this.xLength; j++) {
+			     for(var j=0; j < xLength; j++) {
 			     	threeDArray[i][j] = [];
 			     }
 			  }
 			return threeDArray;
 		}
+
+		// Initialize 3D Array's keys to empty string
+		function initToEmptyStr(array) {
+			var z;
+			for(z = 0; z < zLength; z++){
+				var x;
+				for(x = 0; x < xLength; x++) {
+					var y;
+					for(y = 0; y < yLength; y++){
+						array[z][x][y] = "";
+					}
+				}
+			}
+			return array;
+		}
+
+		function calcTotalSpaces() {
+			totalSpaces = zLength * xLength * yLength;
+		}
+
+		function toggleWidth() {
+			return (Math.floor(100 / xLength) - 1) + '%'; 
+		}
+
+		function toggleHeight() {
+			return (Math.floor(100 / yLength) - 1) + '%';
+		}
+
+		function clearSpace() {
+			this.theGameSpace = [];
+		}
+
+
+	//End of GameSpace
+	}
+
+	return GameSpace;
+}
+
+
 
 
 		// Create 2D matrix
@@ -115,42 +160,4 @@ function GameSpaceFunc(GameAlgorithm) {
 		// }
 
 
-		// Create 3D Array
-		// numPlanes refer to the z-axis.  numColumns = x-axis.  numRows = y-axis
-		// function create3Darray(numPlanes, numColumns, numRows, defaultValue) {
-		// 	var arr = [];
 
-		// 	for(var i = 0; i < numPlanes; i++) {
-		// 		var xAxis = new Array(numColumns);
-
-		// 		for(var j = 0; j < xAxis; j++) {
-		// 			var yAxis = new Array(numRows);
-
-		// 			for(var k = 0; k <)
-
-		// 		}
-
-		// 	}
-		// }
-
-		// Initialize 3D Array's keys to null
-		function initToNull(array) {
-			var z;
-			for(z = 0; z < this.zLength; z++){
-				var x;
-				for(x = 0; x < this.xLength; x++) {
-					var y;
-					for(y = 0; y < this.yLength; y++){
-						array[z][x][y] = null;
-					}
-				}
-			}
-
-			return array;
-		}
-
-	//End of GameSpace
-	}
-
-	return GameSpace;
-}

@@ -24,6 +24,7 @@ body {
 
 #input-player-name input {
 	margin: 0 auto 5% auto;
+	color: black;
 }
 
 #player-icon {

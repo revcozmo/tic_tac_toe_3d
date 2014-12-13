@@ -9,17 +9,22 @@
 		<link rel="stylesheet" href="css/style.css">
 
 		<script src="js/angular.js" type="text/javascript"></script>
+		<!-- Firebase -->
+		<script src="https://cdn.firebase.com/js/client/2.0.4/firebase.js"></script>
+		<!-- AngularFire -->
+		<script src="https://cdn.firebase.com/libs/angularfire/0.9.0/angularfire.min.js"></script>
 		<script src="js/ttt3DApp.js" type="text/javascript"></script>
 		<script src="js/GameSpace.js" type="text/javascript"></script>
 		<script src="js/GameAlgorithm.js"type="text/javascript"></script>
 		<script src="js/Player.js" type="text/javascript"></script>
 		<script src="js/GameExtras.js" type="text/javascript"></script>
+		<script src="js/GameManager.js" type="text/javascript"></script>
 		<script src="js/PlayT3DController.js" type="text/javascript"></script>
 	</head>
 
 	<body ng-controller='PlayT3DController as t3d'>
 		<!-- Start Menu -->
-<!-- 		<main id="start-menu">
+		<main id="start-menu">
 			<h1>TIC TAC TOE<br/>3D</h1>
 
 			<h3>Connect your pieces in a line in 3D space. <br/>
@@ -29,7 +34,8 @@
 
 			<section id="input-player-name">
 				<h3>Enter Your Name:</h3>
-				<input type="text" placeholder="Player1" />
+				<input type="text" placeholder="PlayerName" 
+					   ng-model="t3d.theGame.playerMe.currentPlayer.name" />
 			</section>
 
 			<section id="player-icon">
@@ -40,24 +46,23 @@
 				<img src="images/kodos.png" />
 			</section>
 
-			<button>PLAY</button>
-		</main> -->
+			<button ng-click="t3d.theGame.updatePlayer()">PLAY</button>
+		</main>
 
 		<!-- For gameBoard area -->
-		<div id="container">
-			<div class="plane" ng-repeat="zPlane in t3d.activeSpace.theGameSpace track by $index">
+<!-- 		<div id="container">
+			<div class="plane" ng-repeat="zPlane in t3d.activeSpace.theGameSpace.gameSpace track by $index">
 				<div ng-repeat="xRow in zPlane track by $index" 
 				     ng-style="{'width': t3d.activeSpace.toggleWidth()}">
 					<div ng-repeat="ySpace in xRow track by $index" 
 					     ng-style="{'height': t3d.activeSpace.toggleHeight()}"
 					     ng-click="t3d.activeSpace.change($parent.$parent.$index,
 														  $parent.$index, $index)">
-						<!-- {{$parent.$parent.$index}}{{$parent.$index}}{{$index}} -->
 						{{xRow[$index]}}
 					</div>
 				</div>
 
 			</div>
-
+ -->
 	</body>
 </html>

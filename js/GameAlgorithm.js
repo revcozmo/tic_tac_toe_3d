@@ -266,7 +266,6 @@ function GameAlgorithmFunc() {
 			var z; 	var x; 	 var y;
 
 			z = pz; x = px; y = py;
-
 			var i = z; 	var j = x; 	var k = y;
 			// Find beginning of line
 			for(i, j, k;  0 <= i && 0 <= j && k < yLength; i--, j--, k++) {
