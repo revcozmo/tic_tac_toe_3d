@@ -4,50 +4,80 @@ angular
 
 function GameAlgorithmFunc() {
 
-	var GameAlgorithm = function(gameSpace, zSize, xSize, ySize, ptsToConnect) {
+	var GameAlgorithm = function(gameSpace, zSize, xSize, ySize, pointsToConnect) {
 
 		// Initialize to gameSpace
 		this.checkingSpace		= gameSpace;
-		
-		// var ptsToConnect 	= pointsToConnect;
-		this.ptsToConnect = ptsToConnect;
 
+		// Properties of the game space to check
 		var zLength				= zSize;
 		var xLength				= xSize;
 		var yLength				= ySize;
+		var ptsToConnect 		= pointsToConnect;
 
-		this.update				= update;
+		// List of functions
+		this.checkForWinner		= checkForWinner;
+
+		var update					= update;
+		var checkLine 				= checkLine;
+		var extractHorizontal 		= extractHorizontal;
+		var extractVertical 		= extractVertical;
+		var extractDiagonalOne		= extractDiagonalOne;
+		var extractDiagonalTwo		= extractDiagonalTwo;
+		var extractYZVert			= extractYZVert;
+		var extractYZDiagOne		= extractYZDiagOne;
+		var extractYZDiagTwo		= extractYZDiagTwo;
+		var extractZXDiagOne		= extractZXDiagOne;
+		var extractZXDiagTwo		= extractZXDiagTwo;
+		var extractDiag1D1			= extractDiag1D1;
+		var extractDiag1D2			= extractDiag1D2;
+		var extractDiag2D1			= extractDiag2D1;
+		var extractDiag2D2			= extractDiag2D2;
+
+
+		function checkForWinner(z, x, y, space, playerValue) {
+
+			update(space);
+
+			checkLine( extractHorizontal(z, x, y),  playerValue )
+			checkLine( extractVertical(z, x, y),	playerValue )
+			checkLine( extractDiagonalOne(z, x, y), playerValue )
+			checkLine( extractDiagonalTwo(z, x, y), playerValue )
+			checkLine( extractYZVert(z, x, y), 	    playerValue )
+			checkLine( extractYZDiagOne(z, x, y), 	playerValue )
+			checkLine( extractYZDiagTwo(z, x, y), 	playerValue )
+			checkLine( extractZXDiagOne(z, x, y), 	playerValue )
+			checkLine( extractZXDiagTwo(z, x, y), 	playerValue )
+			checkLine( extractDiag1D1(z, x, y), 	playerValue )
+			checkLine( extractDiag1D2(z, x, y), 	playerValue )
+			checkLine( extractDiag2D1(z, x, y), 	playerValue )
+			checkLine( extractDiag2D2(z, x, y), 	playerValue )
+		}
 
 		function update(space) {
 			this.checkingSpace = space;
 		}
 
-		var checkSum 				= 'xxx';
-		this.checkLine 				= checkLine;
-		this.extractHorizontal 		= extractHorizontal;
-		this.extractVertical 		= extractVertical;
-		this.extractDiagonalOne		= extractDiagonalOne;
-		this.extractDiagonalTwo		= extractDiagonalTwo;
-		this.extractYZVert			= extractYZVert;
-		this.extractYZDiagOne		= extractYZDiagOne;
-		this.extractYZDiagTwo		= extractYZDiagTwo;
-		this.extractZXDiagOne		= extractZXDiagOne;
-		this.extractZXDiagTwo		= extractZXDiagTwo;
-		this.extractDiag1D1			= extractDiag1D1;
-		this.extractDiag1D2			= extractDiag1D2;
-		this.extractDiag2D1			= extractDiag2D1;
-		this.extractDiag2D2			= extractDiag2D2;
-
-
-		function checkLine(arr) {
+		function checkLine(arr, playerValue) {
 			var checkValue = "";
+			var winningValue = "";
 
+			// Create winning value
+			for(var j = 0; j < ptsToConnect; j++) {
+				winningValue = winningValue + playerValue;
+			}
+
+			// Create value of line
 			for(var i = 0; i < arr.length; i++) {
 				checkValue = checkValue + arr[i];
 			}
 
-			if(checkValue.indexOf(checkSum) !== -1)
-				console.log("Line Winner")
+			// Compare values
+			if(checkValue.indexOf(winningValue) !== -1) {
+				console.log("Line Winner");
+				return true;
+			}
+			else { return false; }
 		}
 
 		//Extract line vertical line in reference to placed piece

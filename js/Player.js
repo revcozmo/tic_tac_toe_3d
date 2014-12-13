@@ -43,7 +43,7 @@ function Player($firebase) {
 				self.otherPlayer = self.checkPlayer2;
 			}
 			else {
-				if(self.checkPlayer.name !== undefined)
+				if(self.checkPlayer.name !== undefined) 
 					self.thisPlayer = initPlayer2FB();
 					self.otherPlayer = self.checkPlayer;
 			};

@@ -2,13 +2,13 @@ angular
 	.module('ttt3DApp')
 	.factory('GameSpace', GameSpaceFunc)
 
-GameSpaceFunc.$inject = ['GameAlgorithm', '$firebase'];
+GameSpaceFunc.$inject = ['$firebase'];
 
-function GameSpaceFunc(GameAlgorithm, $firebase) {
+function GameSpaceFunc($firebase) {
 
 	var GameSpace = function(zSize, xSize, ySize) {
 		// A Firebase object that'll hold the 3D array
-		// Later, this.  ftheGameSpace.gameSpace will be the property
+		// Later, this.theGameSpace.gameSpace will be the property
 		// that holds the 3D array
 		this.theGameSpace;
 
@@ -26,7 +26,7 @@ function GameSpaceFunc(GameAlgorithm, $firebase) {
 		this.clearSpace		 = clearSpace;
 
 		this.calcTotalSpaces 	= calcTotalSpaces;
-		this.change			 	= change;
+		this.updateBoard	 	= updateBoard;
 
 		// Change size of boxes depending on dimensions. In HTML/CSS
 		this.toggleWidth 	 = toggleWidth;
@@ -41,47 +41,14 @@ function GameSpaceFunc(GameAlgorithm, $firebase) {
 		
 		totalSpaces 	  = this.calcTotalSpaces();
 
-		// Instantiate Game Algorithm
-		this.CHECKER	  = new GameAlgorithm(this.theGameSpace.gameSpace, zLength,
-												xLength, yLength, 3);
-	
 		// Test of gathering indexes from angular 
-		function change(z,x,y) {
-			// console.log("clicked")
+		function updateBoard(z,x,y, playerValue) {
 			this.currentZ = z;
 			this.currentX = x;
 			this.currentY = y;
-			this.theGameSpace.gameSpace[z][x][y] = 'x';
+			this.theGameSpace.gameSpace[z][x][y] = playerValue;
+
 			this.theGameSpace.$save();
-
-			this.CHECKER.update(this.theGameSpace.gameSpace)
-
-			// //Add GameAlgorithm checking functions here
-			this.CHECKER.checkLine(this.CHECKER.extractHorizontal(z, x, y));
-			
-			this.CHECKER.checkLine(this.CHECKER.extractVertical(z, x, y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractDiagonalOne(z, x, y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractDiagonalTwo(z, x, y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractYZVert(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractYZDiagOne(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractYZDiagTwo(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractZXDiagOne(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractZXDiagTwo(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractDiag1D1(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractDiag1D2(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractDiag2D1(z,x,y));
-
-			this.CHECKER.checkLine(this.CHECKER.extractDiag2D2(z,x,y));
 		}
 
 		function makeGameSpaceFB() {

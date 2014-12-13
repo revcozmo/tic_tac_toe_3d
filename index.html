@@ -69,12 +69,12 @@
 			</section>
 
 			<div id="gameboard">
-				<div class="plane" ng-repeat="zPlane in t3d.activeSpace.theGameSpace.gameSpace track by $index">
+				<div class="plane" ng-repeat="zPlane in t3d.theGame.gameSpace.theGameSpace.gameSpace track by $index">
 					<div ng-repeat="xRow in zPlane track by $index" 
-					     ng-style="{'width': t3d.activeSpace.toggleWidth()}">
+					     ng-style="{'width': t3d.theGame.gameSpace.toggleWidth()}">
 						<div ng-repeat="ySpace in xRow track by $index" 
-						     ng-style="{'height': t3d.activeSpace.toggleHeight()}"
-						     ng-click="t3d.activeSpace.change($parent.$parent.$index,
+						     ng-style="{'height': t3d.theGame.gameSpace.toggleHeight()}"
+						     ng-click="t3d.theGame.onSpaceClick($parent.$parent.$index,
 															  $parent.$index, $index)">
 							{{xRow[$index]}}
 						</div>

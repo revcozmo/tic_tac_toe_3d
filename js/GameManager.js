@@ -13,6 +13,11 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		self.lobby 				= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby"))
 									.$asObject();
 
+		// Create GameSpace and GameAlgorithm objects
+		self.gameSpace 			= new GameSpace(3,3,3);
+		self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
+
+
 		// List of functions for Start Menu
 		self.toggleGameFull		= toggleGameFull;
 		self.updatePlayer 		= updatePlayer;
@@ -20,7 +25,7 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
  		// self.deletePlayer 		= deletePlayer;
 
  		// List of functions for Game Board
- 		
+ 		self.onSpaceClick 		= onSpaceClick;
 
 		self.gameFull 			= false;
 
@@ -70,6 +75,22 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				self.gameFull = false;
 			else
 				self.gameFull = true;
+		}
+
+		function onSpaceClick(z, x, y) {
+			if(self.playerMe.thisPlayer.playerTurn) {
+				// Change in GameSpace
+				self.gameSpace.updateBoard(z, x, y, self.playerMe.thisPlayer.playerValue)
+
+				// Pass in boardSpace(Game Algorithm object) to look for a winning line
+				self.gameAlgorithm.checkForWinner(z, x, y, 
+					self.gameSpace.theGameSpace.gameSpace, self.playerMe.thisPlayer.playerValue)
+				
+				self.playerMe.thisPlayer.playerTurn = false;
+				self.playerMe.otherPlayer.playerTurn = true;
+				self.playerMe.thisPlayer.$save()
+				self.playerMe.otherPlayer.$save()
+			}
 		}
 
 	} // End of GameManager
