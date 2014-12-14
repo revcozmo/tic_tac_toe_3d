@@ -32,6 +32,7 @@ function Player($firebase) {
 		self.updateWins		= updateWins;
 		self.updateLosses	= updateLosses;
 		self.updateTies		= updateTies;
+		self.saveToFB 		= saveToFB;
 
 
 		// Upload player1 or player 2 data
@@ -42,7 +43,7 @@ function Player($firebase) {
 				self.otherPlayer = self.checkPlayer2;
 			}
 			else {
-				if(self.checkPlayer.name !== undefined) 
+				if(self.checkPlayer2.name === undefined) 
 					self.thisPlayer = initPlayer2FB();
 					self.otherPlayer = self.checkPlayer;
 			};
@@ -53,7 +54,7 @@ function Player($firebase) {
 			self.checkPlayer.name = "";
 			self.checkPlayer.playerID = numPlayers;
 			self.checkPlayer.playerValue =  "x";
-			self.checkPlayer.playerTurn = false;
+			self.checkPlayer.playerTurn = true;
 			self.checkPlayer.theWinner = "";
 			self.checkPlayer.wins =  0;
 			self.checkPlayer.losses = 0;
@@ -87,25 +88,28 @@ function Player($firebase) {
 		function updateIcon(icon) 		{ playerIcon = icon; }
 
 		function toggleTurn() {
-			if(playerTurn) 	{ playerTurn = false; }
-			else 			{ playerTurn = true; }
+			if(self.thisPlayer.playerTurn)
+				self.thisPlayer.playerTurn = false; 
+			else 
+				self.thisPlayer.playerTurn = true;
 		}
 
 		function getPlayerValue() { return playerValue;	}
 		
 		function updateWins() {
 			self.thisPlayer.wins++;
-			self.thisPlayer.$save()
 		}
 		
 		function updateLosses()  {
 			self.thisPlayer.losses++;
-			self.thisPlayer.$save()
 		}
 
 		function updateTies() {
-			self.thisPlayer.ties++;
-			self.thisPlayer.$save()
+			self.thisPlayer.ties++
+		}
+
+		function saveToFB() {
+			self.thisPlayer.$save();
 		}
 
 	// End of Player

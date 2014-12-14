@@ -2,7 +2,9 @@ angular
 	.module('ttt3DApp')
 	.factory('GameAlgorithm', GameAlgorithmFunc)
 
-function GameAlgorithmFunc() {
+GameAlgorithmFunc.$inject = ['$firebase'];
+
+function GameAlgorithmFunc($firebase) {
 
 	var GameAlgorithm = function(gameSpace, zSize, xSize, ySize, pointsToConnect) {
 
@@ -34,6 +36,26 @@ function GameAlgorithmFunc() {
 		var extractDiag2D1			= extractDiag2D1;
 		var extractDiag2D2			= extractDiag2D2;
 
+		function makeGameSpaceFB() {
+			var ref = new Firebase("https://t33d.firebaseio.com/GameAlgorithm");	
+			var connect = $firebase(ref).$asObject();
+
+			return connect;
+		}
+
+		this.gameAlgo = makeGameSpaceFB();
+
+		var self = this;
+		this.gameAlgo.$loaded(function(){
+			self.gameAlgo.ptsToConnect = ptsToConnect;
+			self.gameAlgo.zLength   = zLength;
+			self.gameAlgo.xLength	= xLength;
+			self.gameAlgo.yLength	= yLength;
+			self.gameAlgo.$save();
+		});
+
+// Here 
+// stop the un
 
 		function checkForWinner(z, x, y, space, playerValue) {
 			update(space);
@@ -66,15 +88,17 @@ function GameAlgorithmFunc() {
 			var winningValue = "";
 
 			// Create winning value
-			for(var j = 0; j < ptsToConnect; j++) {
+			for(var j = 0; j < self.gameAlgo.ptsToConnect; j++) {
 				winningValue = winningValue + playerValue;
 			}
 
 			// Create value of line
 			for(var i = 0; i < arr.length; i++) {
-				checkValue = checkValue + arr[i];
+				if(arr[i] === "")
+					checkValue = checkValue + "1";
+				else
+					checkValue = checkValue + arr[i];
 			}
-
 			// Compare values
 			if(checkValue.indexOf(winningValue) !== -1) {
 				console.log("Line Winner");
@@ -87,7 +111,7 @@ function GameAlgorithmFunc() {
 		//Return an array containing values of that line
 		function extractVertical(pz, px, py) {
 			var theArr = [];
-			for(var y = 0; y < yLength; y++) {
+			for(var y = 0; y < self.gameAlgo.yLength; y++) {
 				theArr.push(this.checkingSpace[pz][px][y])
 			}
 			return theArr;
@@ -97,7 +121,7 @@ function GameAlgorithmFunc() {
 		//Return an array containing values of that line
 		function extractHorizontal(pz, px, py) {
 			var theArr = [];
-			for(var x = 0; x < xLength; x++) {
+			for(var x = 0; x < self.gameAlgo.xLength; x++) {
 				theArr.push(this.checkingSpace[pz][x][py])
 			}
 			return theArr;		
@@ -113,7 +137,7 @@ function GameAlgorithmFunc() {
 				var x = px-py;	var y = 0;
 			}
 
-			for(x, y; x < xLength && y < yLength; x++, y++) {
+			for(x, y; x < self.gameAlgo.xLength && y < self.gameAlgo.yLength; x++, y++) {
 				theArr.push(this.checkingSpace[pz][x][y])
 			}
 			return theArr;		
@@ -125,8 +149,8 @@ function GameAlgorithmFunc() {
 			var x;
 			var y;
 
-			if(px + py >= xLength) {
-				x = xLength -1;
+			if(px + py >= self.gameAlgo.xLength) {
+				x = self.gameAlgo.xLength -1;
 				y = py - (x-px);
 			}
 			else {
@@ -134,7 +158,7 @@ function GameAlgorithmFunc() {
 				y = 0;
 			}
 
-			for(x,y; 0 <= x && y < yLength; x--, y++) {
+			for(x,y; 0 <= x && y < self.gameAlgo.yLength; x--, y++) {
 				theArr.push(this.checkingSpace[pz][x][y])
 			}
 			return theArr;		
@@ -145,7 +169,7 @@ function GameAlgorithmFunc() {
 			var theArr = [];
 
 			var theArr = [];
-			for(var z = 0; z < zLength; z++) {
+			for(var z = 0; z < self.gameAlgo.zLength; z++) {
 				theArr.push(this.checkingSpace[z][px][py])
 			}
 			return theArr;
@@ -164,7 +188,7 @@ function GameAlgorithmFunc() {
 				var z = pz-py;	var y = 0;
 			}
 
-			for(z, y; z < zLength && y < yLength; z++, y++) {
+			for(z, y; z < self.gameAlgo.zLength && y < self.gameAlgo.yLength; z++, y++) {
 				theArr.push(this.checkingSpace[z][px][y])
 			}
 			return theArr;
@@ -176,8 +200,8 @@ function GameAlgorithmFunc() {
 			var z;
 			var y;
 
-			if(pz + py >= yLength) {
-				y = yLength -1;
+			if(pz + py >= self.gameAlgo.yLength) {
+				y = self.gameAlgo.yLength -1;
 				z = pz - (y-py);
 			}
 			else {
@@ -185,7 +209,7 @@ function GameAlgorithmFunc() {
 				y = pz + py;
 			}
 
-			for(z,y; z < zLength && 0 <= y; z++, y--) {
+			for(z,y; z < self.gameAlgo.zLength && 0 <= y; z++, y--) {
 				theArr.push(this.checkingSpace[z][px][y])
 			}
 			return theArr;
@@ -204,7 +228,7 @@ function GameAlgorithmFunc() {
 				var z = pz-px;	var x = 0;
 			}
 
-			for(z, x; z < zLength && x < xLength; z++, x++) {
+			for(z, x; z < self.gameAlgo.zLength && x < self.gameAlgo.xLength; z++, x++) {
 				theArr.push(this.checkingSpace[z][x][py])
 			}
 			return theArr;
@@ -216,8 +240,8 @@ function GameAlgorithmFunc() {
 			var z;
 			var x;
 
-			if(pz + px >= xLength) {
-				x = xLength -1;
+			if(pz + px >= self.gameAlgo.xLength) {
+				x = self.gameAlgo.xLength -1;
 				z = pz - (x-px);
 			}
 			else {
@@ -225,7 +249,7 @@ function GameAlgorithmFunc() {
 				z = 0;
 			}
 
-			for(z,x; z < zLength && 0 <= x; z++, x--) {
+			for(z,x; z < self.gameAlgo.zLength && 0 <= x; z++, x--) {
 				theArr.push(this.checkingSpace[z][x][py])
 			}
 			return theArr;	
@@ -245,7 +269,7 @@ function GameAlgorithmFunc() {
 				}
 			}
 			// Extract line
-			for(z, x, y; z < zLength && x < xLength && y < yLength; z++, x++, y++) {
+			for(z, x, y; z < self.gameAlgo.zLength && x < self.gameAlgo.xLength && y < self.gameAlgo.yLength; z++, x++, y++) {
 				theArr.push(this.checkingSpace[z][x][y])
 			}
 			return theArr;	
@@ -261,13 +285,13 @@ function GameAlgorithmFunc() {
 			var i = z; 	var j = x; 	var k = y;
 
 			// Find beginning of line
-			for(i, j, k;  0 <= i && j < xLength && k < yLength; i--, j++, k++) {
-				if(0 <= i && j < xLength && k < yLength) {
+			for(i, j, k;  0 <= i && j < self.gameAlgo.xLength && k < self.gameAlgo.yLength; i--, j++, k++) {
+				if(0 <= i && j < self.gameAlgo.xLength && k < self.gameAlgo.yLength) {
 					z = i;  	x = j;		y = k;
 				}
 			}
 			// Extract line
-			for(z, x, y; z < zLength && 0 <= x && 0 <= y; z++, x--, y--) {
+			for(z, x, y; z < self.gameAlgo.zLength && 0 <= x && 0 <= y; z++, x--, y--) {
 				theArr.push(this.checkingSpace[z][x][y])
 			}
 			return theArr;	
@@ -281,13 +305,13 @@ function GameAlgorithmFunc() {
 			z = pz; x = px; y = py;
 			var i = z; 	var j = x; 	var k = y;
 			// Find beginning of line
-			for(i, j, k;  0 <= i && j < xLength && 0 <= k; i--, j++, k--) {
-				if(0 <= i && j < xLength && 0 <= k) {
+			for(i, j, k;  0 <= i && j < self.gameAlgo.xLength && 0 <= k; i--, j++, k--) {
+				if(0 <= i && j < self.gameAlgo.xLength && 0 <= k) {
 					z = i;  	x = j;		y = k;
 				}
 			}
 			// Extract line
-			for(z, x, y; z < zLength && 0 <= x && y < yLength; z++, x--, y++) {
+			for(z, x, y; z < self.gameAlgo.zLength && 0 <= x && y < self.gameAlgo.yLength; z++, x--, y++) {
 				theArr.push(this.checkingSpace[z][x][y])
 			}
 			return theArr;	
@@ -301,13 +325,13 @@ function GameAlgorithmFunc() {
 			z = pz; x = px; y = py;
 			var i = z; 	var j = x; 	var k = y;
 			// Find beginning of line
-			for(i, j, k;  0 <= i && 0 <= j && k < yLength; i--, j--, k++) {
-				if(0 <= i && 0 <= j && k < yLength) {
+			for(i, j, k;  0 <= i && 0 <= j && k < self.gameAlgo.yLength; i--, j--, k++) {
+				if(0 <= i && 0 <= j && k < self.gameAlgo.yLength) {
 					z = i;  	x = j;		y = k;
 				}
 			}
 			// Extract line
-			for(z, x, y; z < zLength && x < xLength && 0 <= y; 	z++, x++, y--) {
+			for(z, x, y; z < self.gameAlgo.zLength && x < self.gameAlgo.xLength && 0 <= y; 	z++, x++, y--) {
 				theArr.push(this.checkingSpace[z][x][y])
 			}
 			return theArr;	

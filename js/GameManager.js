@@ -37,12 +37,12 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 		// Functions and properties for Game Over Menu
 		self.theWinner			= "";
-		self.showWinner 		= showWinner;
-
+		self.playAgain 			= playAgain;
 
 
 		// When Firebase data is loaded
 		self.lobby.$loaded (function(){
+			self.lobby.theWinner = "";
 
 			// Init numPlayers if it doesn't exist
 			if(self.lobby.numPlayers === undefined) {
@@ -129,82 +129,125 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 			// Runs only on current player's turn
 			if(self.playerMe.thisPlayer.playerTurn) {
-				// Update spaces of board (in GameSpace object)
-				self.gameSpace.updateBoard(z, x, y, self.playerMe.thisPlayer.playerValue)
 
-				// Pass in board to the Game Algorithm object to look for a winning line
-				winner = self.gameAlgorithm.checkForWinner(z, x, y, 
-					self.gameSpace.theGameSpace.gameSpace, self.playerMe.thisPlayer.playerValue)
-				
-				// Toggle turns
-				self.playerMe.thisPlayer.playerTurn = false;
-				self.playerMe.otherPlayer.playerTurn = true;
-				self.playerMe.thisPlayer.$save()
-				self.playerMe.otherPlayer.$save()
+				// Run if clicked space is empty
+				if(self.gameSpace.theGameSpace.gameSpace[z][x][y] === "") {
+					// Update spaces of board (in GameSpace object)
+					self.gameSpace.updateBoard(z, x, y, self.playerMe.thisPlayer.playerValue)
 
-				// Run if thisPlayer played a winning line
-				if(winner.indexOf(true) !== -1) {
-					// Set winner
-					self.playerMe.thisPlayer.theWinner = true;
-					self.playerMe.otherPlayer.theWinner = false;
-
-					// Disable board
-					self.playerMe.thisPlayer.playerTurn = false;
-					self.playerMe.otherPlayer.playerTurn = false;
-
-					self.playerMe.thisPlayer.$save()
-					self.playerMe.otherPlayer.$save()
-
-					// Toggle Game Over Menu
-					self.showWinner();
-				}
-
-				// Declaring a tie/cat's game
-				if(winner.indexOf(true) === -1 && 
-					self.gameSpace.theGameSpace.occupiedSpaces === self.gameSpace.theGameSpace.totalSpaces) {
+					// Pass in board to the Game Algorithm object to look for a winning line
+					winner = self.gameAlgorithm.checkForWinner(z, x, y, 
+						self.gameSpace.theGameSpace.gameSpace, self.playerMe.thisPlayer.playerValue)
 					
-					self.playerMe.thisPlayer.theWinner = false;
-					self.playerMe.otherPlayer.theWinner = false;
-
-					// Disable board
+					// Toggle turns
 					self.playerMe.thisPlayer.playerTurn = false;
-					self.playerMe.otherPlayer.playerTurn = false;
+					self.playerMe.otherPlayer.playerTurn = true;
 					self.playerMe.thisPlayer.$save()
 					self.playerMe.otherPlayer.$save()
 
-					// Toggle Game Over Menu
-					self.showWinner();
-				}
-			}
+					// Run if thisPlayer played a winning line
+					if(winner.indexOf(true) !== -1) {
+						// Set winner
+						self.playerMe.thisPlayer.theWinner = true;
+						self.playerMe.otherPlayer.theWinner = false;
+						// Disable board
+						self.playerMe.thisPlayer.playerTurn = false;
+						self.playerMe.otherPlayer.playerTurn = false;
+
+						self.playerMe.thisPlayer.$save()
+						self.playerMe.otherPlayer.$save()
+
+						// Toggle Game Over Menu
+						self.lobby.theWinner = self.playerMe.thisPlayer.name + " is the winner!";
+						self.lobby.$save();
+					}
+
+					// Declaring a tie/cat's game
+					if(winner.indexOf(true) === -1 && 
+						self.gameSpace.theGameSpace.occupiedSpaces === self.gameSpace.theGameSpace.totalSpaces) {
+						
+						// No winner/cat's game
+						self.playerMe.thisPlayer.theWinner = false;
+						self.playerMe.otherPlayer.theWinner = false;
+						// Disable board
+						self.playerMe.thisPlayer.playerTurn = false;
+						self.playerMe.otherPlayer.playerTurn = false;
+						
+						self.playerMe.thisPlayer.$save()
+						self.playerMe.otherPlayer.$save()
+
+						// Toggle Game Over Menu
+						self.lobby.theWinner = "Tie Game";
+						self.lobby.$save();
+					}
+				}//second if
+			}//first if
+
+			if(self.waitingMsg !== null)
+				self.waitingMsg = null;
 		}
 
 		//////////////////////////////
 		// For Game Over Menu
 		//////////////////////////////
-		// function for showing winner on screen
-		function showWinner() {
-			if(self.playerMe.thisPlayer.theWinner)
-				self.theWinner = self.playerMe.thisPlayer.name + " wins";
-			else if(self.playerMe.otherPlayer.theWinner)
-				self.theWinner = self.playerMe.otherPlayer.name + "wins";
-			else
-				self.theWinner = "TIE";
 
-			self.toggleGameOver();
+		function playAgain() {
+			// Make buttons disappear and have a 'waiting sign'
+			// Toggle info
+			if(self.playerMe.thisPlayer.theWinner === true) {
+				self.playerMe.updateWins();
+				self.playerMe.toggleTurn();
+				self.playerMe.thisPlayer.theWinner = "";
+				self.playerMe.saveToFB();
+
+				self.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
+			}
+
+			
+			if(self.playerMe.thisPlayer.theWinner === false) {
+				var z = parseInt(self.zSize);
+				var x = parseInt(self.xSize);
+				var y = parseInt(self.ySize);
+				var ptsToConnect = parseInt(self.ptsToConnect);
+
+				if( z === undefined || x === undefined 
+					                || y === undefined || ptsToConnect === undefined) {
+
+					self.errorMsg = "Select settings for next game";
+				}
+				else {
+					// Clear current board
+					// self.gameSpace.theGameSpace.$remove();
+
+					self.gameSpace.theGameSpace.$loaded(function() {
+						// Recreate board and algorithm
+						self.gameSpace 			= new GameSpace(z,x,y);
+						self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, z, x, y, ptsToConnect);
+
+						// Reset Game Over Message
+						self.errorMsg = null;
+
+						self.lobby.theWinner = "";
+						self.lobby.$save();
+
+						// Reset values for next game
+						self.playerMe.updateLosses();
+						self.playerMe.thisPlayer.theWinner = "";
+						self.playerMe.saveToFB();
+
+						if(self.playerMe.otherPlayer.theWinner !== "")
+							self.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
+					});
+
+				}
+
+			}
+			// reset whatever values that need to be reset
 		}
 
-		// function for winner who clicks yes
-		// 	updates info.  add waiting screen for player two
+// Boolean for showing options.  Loser...but if cats game.  Higher ID number chooses
 
 		// function for winner who clicks no
-
-		// 	show loser ng-show
-		// 	collect info for next game 
-		// 	clear current board 
-		// 	create new board for new game 
-		// 	update loser info
-
-
 
 	} // End of GameManager
 

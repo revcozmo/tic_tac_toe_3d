@@ -146,5 +146,12 @@ body {
 }
 
 
+#loser-selection select {
+	display: block;
+	margin: 3px auto 3px auto;
+}
 
+#gameover h4 {
+	color: white;
+}
 
