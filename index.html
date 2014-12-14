@@ -23,9 +23,10 @@
 		<script src="js/PlayT3DController.js" type="text/javascript"></script>
 	</head>
 
+
 	<body ng-controller='PlayT3DController as t3d'>
 		<!-- Start Menu -->
-<!-- 		<main id="start-menu">
+		<main id="start-menu" ng-show="t3d.theGame.showStartMenu">
 			<h1>TIC TAC TOE<br/>3D</h1>
 
 			<h3>Connect your pieces in a line in 3D space. <br/>
@@ -52,12 +53,12 @@
 				>
 				PLAY
 			</button>
-
-		</main> -->
+		</main>
 
 		<!-- For gameBoard area -->
+		<!-- <main id="container" ng-show="true"> -->
 
-		<main id="container">
+		<main id="container" ng-show="t3d.theGame.showGameSpace">
 			<section id="player1">
 				<h2>{{ t3d.theGame.playerMe.thisPlayer.name }}</h2>
 				<h3>Wins</h3>
@@ -92,6 +93,49 @@
 				<h3>Ties</h3>
 				<h4>{{ t3d.theGame.playerMe.otherPlayer.ties }}</h4>
 			</section>
+
+			<section id="gameover" ng-show="(t3d.theGame.playerMe.thisPlayer.theWinner === true 
+					|| t3d.theGame.playerMe.otherPlayer.theWinner === true) || 
+					(t3d.theGame.playerMe.thisPlayer.theWinner === false && t3d.theGame.playerMe.otherPlayer.theWinner === false)">
+				<h1> {{ t3d.theGame.theWinner }}</h1>
+				<h3>Play again?</h3>
+				<button ng-click="">Yes</button>
+				<button ng-click="">No</button>
+
+				<section id="loser-selection" ng-show="true">
+					<h3>Choose board dimensions</h3>
+
+					<select name="Z Spaces" ng-model="t3d.theGame.zSize">
+						<option value="">Choose number of planes</option>
+						<option value="1" selected>1</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select>
+
+					<select name="X Spaces" ng-model="t3d.theGame.xSize">
+						<option value="">Choose width</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select>
+
+					<select name="Y Spaces" ng-model="t3d.theGame.ySize">
+						<option value="">Choose length</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select>
+
+					<select name="pts-to-connect" ng-model="t3d.theGame.ptsToConnect">
+						<option value="">Spaces to Connect</option>
+						<option value="3">3</option>
+						<option value="4">4</option>
+					</select>
+
+					<button ng-click="">Play</button>
+
+				</section>
+			</section>
+
+
 
 		</main>
 

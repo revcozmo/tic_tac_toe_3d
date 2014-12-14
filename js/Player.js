@@ -15,14 +15,14 @@ function Player($firebase) {
 		self.checkPlayer2 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player2"))
 								.$asObject();
 
+		// Player info of current player
 		self.thisPlayer;
+		// Player info of opponent
 		self.otherPlayer;
 
 		// List of functions to initialize Firebase data of player
 		self.initPlayer1FB 	= initPlayer1FB;
 		self.initPlayer2FB	= initPlayer2FB;
-
-
 
 		// List of other functions
 		self.updatePlayerName = updatePlayerName;
@@ -34,8 +34,7 @@ function Player($firebase) {
 		self.updateTies		= updateTies;
 
 
-
-		// Create player1 or player 2 data
+		// Upload player1 or player 2 data
 		self.checkPlayer.$loaded(function() {
 			if(self.checkPlayer.name === undefined) {
 
@@ -55,6 +54,7 @@ function Player($firebase) {
 			self.checkPlayer.playerID = numPlayers;
 			self.checkPlayer.playerValue =  "x";
 			self.checkPlayer.playerTurn = false;
+			self.checkPlayer.theWinner = "";
 			self.checkPlayer.wins =  0;
 			self.checkPlayer.losses = 0;
 			self.checkPlayer.ties =  0;
@@ -68,6 +68,7 @@ function Player($firebase) {
 			self.checkPlayer2.playerID = numPlayers;
 			self.checkPlayer2.playerValue =  "o";
 			self.checkPlayer2.playerTurn = false;
+			self.checkPlayer2.theWinner = "";
 			self.checkPlayer2.wins =  0;
 			self.checkPlayer2.losses = 0;
 			self.checkPlayer2.ties =  0;
@@ -91,9 +92,21 @@ function Player($firebase) {
 		}
 
 		function getPlayerValue() { return playerValue;	}
-		function updateWins() 	{ wins += 1; }
-		function updateLosses() { losses += 1; }
-		function updateTies() 	{ ties += 1; }
+		
+		function updateWins() {
+			self.thisPlayer.wins++;
+			self.thisPlayer.$save()
+		}
+		
+		function updateLosses()  {
+			self.thisPlayer.losses++;
+			self.thisPlayer.$save()
+		}
+
+		function updateTies() {
+			self.thisPlayer.ties++;
+			self.thisPlayer.$save()
+		}
 
 	// End of Player
 	}

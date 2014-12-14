@@ -7,47 +7,50 @@ GameSpaceFunc.$inject = ['$firebase'];
 function GameSpaceFunc($firebase) {
 
 	var GameSpace = function(zSize, xSize, ySize) {
+
 		// A Firebase object that'll hold the 3D array
 		// Later, this.theGameSpace.gameSpace will be the property
 		// that holds the 3D array
 		this.theGameSpace;
 
 		// Method to create FireBase object
-		this.makeGameSpaceFB = makeGameSpaceFB;
+		var makeGameSpaceFB = makeGameSpaceFB;
 
 		// Dimensions of 3D board and number of spaces
 		var zLength 		 = zSize;
 		var xLength			 = xSize;
 		var yLength 		 = ySize;
 		var totalSpaces;
+		var occupiedSpaces	 = 0;
 
 		this.create3DArray 	 = create3DArray;
 		this.initToEmptyStr	 = initToEmptyStr;
 		this.clearSpace		 = clearSpace;
 
-		this.calcTotalSpaces 	= calcTotalSpaces;
+		var calcTotalSpaces 	= calcTotalSpaces;
 		this.updateBoard	 	= updateBoard;
 
 		// Change size of boxes depending on dimensions. In HTML/CSS
 		this.toggleWidth 	 = toggleWidth;
 		this.toggleHeight    = toggleHeight;
 
-		// Create the game space when object is instantiated
-		this.theGameSpace = this.makeGameSpaceFB();
+		// Create the game space when GameSpace is instantiated
+		this.theGameSpace = makeGameSpaceFB();
 		var tempArr		  = this.create3DArray();
 		tempArr		  	  = this.initToEmptyStr(tempArr);
 		this.theGameSpace.gameSpace = tempArr;
+		calcTotalSpaces();
+		this.theGameSpace.totalSpaces    = totalSpaces;
+		this.theGameSpace.occupiedSpaces = occupiedSpaces;
+
 		this.theGameSpace.$save();
 		
-		totalSpaces 	  = this.calcTotalSpaces();
+		
 
 		// Test of gathering indexes from angular 
 		function updateBoard(z,x,y, playerValue) {
-			this.currentZ = z;
-			this.currentX = x;
-			this.currentY = y;
 			this.theGameSpace.gameSpace[z][x][y] = playerValue;
-
+			this.theGameSpace.occupiedSpaces++;
 			this.theGameSpace.$save();
 		}
 

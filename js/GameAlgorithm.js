@@ -16,7 +16,7 @@ function GameAlgorithmFunc() {
 		var ptsToConnect 		= pointsToConnect;
 
 		// List of functions
-		this.checkForWinner		= checkForWinner;
+		this.checkForWinner			= checkForWinner;
 
 		var update					= update;
 		var checkLine 				= checkLine;
@@ -36,22 +36,25 @@ function GameAlgorithmFunc() {
 
 
 		function checkForWinner(z, x, y, space, playerValue) {
-
 			update(space);
 
-			checkLine( extractHorizontal(z, x, y),  playerValue )
-			checkLine( extractVertical(z, x, y),	playerValue )
-			checkLine( extractDiagonalOne(z, x, y), playerValue )
-			checkLine( extractDiagonalTwo(z, x, y), playerValue )
-			checkLine( extractYZVert(z, x, y), 	    playerValue )
-			checkLine( extractYZDiagOne(z, x, y), 	playerValue )
-			checkLine( extractYZDiagTwo(z, x, y), 	playerValue )
-			checkLine( extractZXDiagOne(z, x, y), 	playerValue )
-			checkLine( extractZXDiagTwo(z, x, y), 	playerValue )
-			checkLine( extractDiag1D1(z, x, y), 	playerValue )
-			checkLine( extractDiag1D2(z, x, y), 	playerValue )
-			checkLine( extractDiag2D1(z, x, y), 	playerValue )
-			checkLine( extractDiag2D2(z, x, y), 	playerValue )
+			var tempArray = [];
+
+			tempArray.push(checkLine( extractHorizontal(z, x, y),  playerValue ))
+			// tempArray.push(checkLine( extractVertical(z, x, y),	playerValue ))
+			// tempArray.push(checkLine( extractDiagonalOne(z, x, y), playerValue ))
+			// tempArray.push(checkLine( extractDiagonalTwo(z, x, y), playerValue ))
+			// tempArray.push(checkLine( extractYZVert(z, x, y), 	    playerValue ))
+			// tempArray.push(checkLine( extractYZDiagOne(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractYZDiagTwo(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractZXDiagOne(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractZXDiagTwo(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractDiag1D1(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractDiag1D2(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractDiag2D1(z, x, y), 	playerValue ))
+			// tempArray.push(checkLine( extractDiag2D2(z, x, y), 	playerValue ))
+
+			return tempArray;
 		}
 
 		function update(space) {

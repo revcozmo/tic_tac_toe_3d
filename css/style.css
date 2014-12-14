@@ -52,6 +52,7 @@ body {
 #container {
 	width: 950px;
 	margin: 40px auto 0px auto;
+	positive: relative;
 }
 
 #player1, #player2 {
@@ -123,3 +124,27 @@ body {
 .plane div div:hover {
 	background-color: #00A0E4;
 }
+
+
+
+/*Game Over Menu*/
+#gameover {
+	position: absolute;
+	border: 3px solid red;
+	background-color: rgba(0, 0, 0, .9);
+	width: 400px;
+	color: white;
+	top: 15%;
+	left: 50%;
+	margin-left: -200px;
+	text-align: center;
+	padding: 15px;
+}
+
+#gameover button {
+	color: black;
+}
+
+
+
+
