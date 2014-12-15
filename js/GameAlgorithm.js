@@ -6,7 +6,10 @@ GameAlgorithmFunc.$inject = ['$firebase'];
 
 function GameAlgorithmFunc($firebase) {
 
+	// This algorithm takes in the 3D array to check for a winner.
+	// Take a look at GameSpace at how I labeled the 3D space.
 	var GameAlgorithm = function(gameSpace, zSize, xSize, ySize, pointsToConnect) {
+		var self = this;
 
 		// Initialize to gameSpace
 		this.checkingSpace		= gameSpace;
@@ -19,7 +22,6 @@ function GameAlgorithmFunc($firebase) {
 
 		// List of functions
 		this.checkForWinner			= checkForWinner;
-
 		var update					= update;
 		var checkLine 				= checkLine;
 		var extractHorizontal 		= extractHorizontal;
@@ -36,6 +38,9 @@ function GameAlgorithmFunc($firebase) {
 		var extractDiag2D1			= extractDiag2D1;
 		var extractDiag2D2			= extractDiag2D2;
 
+		////////////////////////
+		// Create Firebase object
+		///////////////////////
 		function makeGameSpaceFB() {
 			var ref = new Firebase("https://t33d.firebaseio.com/GameAlgorithm");	
 			var connect = $firebase(ref).$asObject();
@@ -45,7 +50,8 @@ function GameAlgorithmFunc($firebase) {
 
 		this.gameAlgo = makeGameSpaceFB();
 
-		var self = this;
+		// These data are sent to Firebase to be used for
+		// both players
 		this.gameAlgo.$loaded(function(){
 			self.gameAlgo.ptsToConnect = ptsToConnect;
 			self.gameAlgo.zLength   = zLength;
@@ -54,9 +60,18 @@ function GameAlgorithmFunc($firebase) {
 			self.gameAlgo.$save();
 		});
 
+
+
+		////////////////////////
+		// List of methods
+		///////////////////////
 		function checkForWinner(z, x, y, space, playerValue) {
+			// Update the space to check
 			update(space);
 
+			// This array holds boolean values.
+			// True for if a winning line is found.
+			// False for if no winning line is found
 			var tempArray = [];
 
 			tempArray.push(checkLine( extractHorizontal(z, x, y),  playerValue ))
@@ -98,7 +113,6 @@ function GameAlgorithmFunc($firebase) {
 			}
 			// Compare values
 			if(checkValue.indexOf(winningValue) !== -1) {
-				console.log("Line Winner");
 				return true;
 			}
 			else { return false; }

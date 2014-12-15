@@ -2,40 +2,30 @@ angular
 	.module('ttt3DApp')
 	.factory('Player', Player)
 
-Player.$inject = ['$firebase']
+Player.$inject = ['$firebase'];
 
+// One Player object contains the data of both 
+// the current player(thisPlayer) and the opponent (otherPlayer).
+// This is done to dyanmically change both player's data in
+// a single turn
 function Player($firebase) {
 	
 	var Player = function(numPlayers) {
-
 		var self = this;
 
+		// Gather Firebase data of two players
 		self.checkPlayer 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player"))
 								.$asObject();
 		self.checkPlayer2 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player2"))
 								.$asObject();
 
-		// Player info of current player
+		// Player data of current player
 		self.thisPlayer;
-		// Player info of opponent
+		// Player data of opponent
 		self.otherPlayer;
 
-		// List of functions to initialize Firebase data of player
-		self.initPlayer1FB 	= initPlayer1FB;
-		self.initPlayer2FB	= initPlayer2FB;
-
-		// List of other functions
-		self.updatePlayerName = updatePlayerName;
-		self.updateIcon		= updateIcon;
-		self.toggleTurn		= toggleTurn;
-		self.getPlayerValue	= getPlayerValue;
-		self.updateWins		= updateWins;
-		self.updateLosses	= updateLosses;
-		self.updateTies		= updateTies;
-		self.saveToFB 		= saveToFB;
-
-
-		// Upload player1 or player 2 data
+		// On Player object instantiation, 
+		// set current player and opponentdata
 		self.checkPlayer.$loaded(function() {
 			if(self.checkPlayer.name === undefined) {
 
@@ -47,9 +37,22 @@ function Player($firebase) {
 					self.thisPlayer = initPlayer2FB();
 					self.otherPlayer = self.checkPlayer;
 			}
-
 		});
 
+
+		// List of functions to initialize Firebase data of player
+		self.initPlayer1FB 	= initPlayer1FB;
+		self.initPlayer2FB	= initPlayer2FB;
+
+		// List of other functions
+		self.toggleTurn		= toggleTurn;
+		self.updateWins		= updateWins;
+		self.updateLosses	= updateLosses;
+		self.updateTies		= updateTies;
+		self.saveToFB 		= saveToFB;
+
+
+		// Initialize player default values
 		function initPlayer1FB() {
 			self.checkPlayer.name = "";
 			self.checkPlayer.playerID = numPlayers;
@@ -78,23 +81,12 @@ function Player($firebase) {
 			return self.checkPlayer2;
 		}
 
-
-
-
-
-
-		function updatePlayerName(name) { playerName = name; }
-
-		function updateIcon(icon) 		{ playerIcon = icon; }
-
 		function toggleTurn() {
 			if(self.thisPlayer.playerTurn)
 				self.thisPlayer.playerTurn = false; 
 			else 
 				self.thisPlayer.playerTurn = true;
 		}
-
-		function getPlayerValue() { return playerValue;	}
 		
 		function updateWins() {
 			self.thisPlayer.wins++;
@@ -112,9 +104,7 @@ function Player($firebase) {
 			self.thisPlayer.$save();
 		}
 
-	// End of Player
-	}
-
+	}// End of Player
 
 	return Player;
 }

@@ -9,35 +9,11 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 	var GameManager = function() {
 		var self	= this;
 
-		// Create Firebase object for lobby
+		// On GameManager instanstiation, Create Firebase object for lobby
 		self.lobby 				= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby"))
 									.$asObject();
 
-		// Create GameSpace and GameAlgorithm objects
-		self.gameSpace 			= new GameSpace(3,3,3);
-		self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
-
-		// Functions and properties to toggle menus
-		self.toggleStartMenu	= toggleStartMenu;
-		self.toggleGameSpace	= toggleGameSpace;
-		// self.toggleGameOver		= toggleGameOver;
-		// self.lobby.showStartMenu		= true;
-		// self.lobby.showGameSpace		= false;
-		// self.showGameOver 		= false;
-
-		// Functions for Start Menu
-		self.updatePlayer 		= updatePlayer;
-		self.startGame 			= startGame;
- 		
- 		// Functions for Game Board
- 		self.onSpaceClick 		= onSpaceClick;
-
-		// Functions and properties for Game Over Menu
-		self.theWinner			= "";
-		self.playAgain 			= playAgain;
-		self.destroyPlayer 		= destroyPlayer;
-
-		// When Firebase data is loaded
+		// When Firebase data is loaded, initialize default values
 		self.lobby.$loaded (function(){
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
@@ -59,6 +35,26 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		});
 
 
+		// Create GameSpace and GameAlgorithm objects
+		self.gameSpace 			= new GameSpace(3,3,3);
+		self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
+
+		// Functions and properties to toggle menus
+		self.toggleStartMenu	= toggleStartMenu;
+		self.toggleGameSpace	= toggleGameSpace;
+
+		// Functions for Start Menu
+		self.updatePlayer 		= updatePlayer;
+		self.startGame 			= startGame;
+ 		
+ 		// Functions for Game Board
+ 		self.onSpaceClick 		= onSpaceClick;
+
+		// Functions for Game Over Menu
+		self.playAgain 			= playAgain;
+		self.destroyPlayer 		= destroyPlayer;
+
+
 		function toggleStartMenu() {
 			if(self.lobby.showStartMenu)
 				self.lobby.showStartMenu = false;
@@ -77,30 +73,30 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 			self.lobby.$save()
 		}
 
-		// function toggleGameOver() {
-		// 	if(self.showGameOver)
-		// 		self.showGameOver = false;
-		// 	else
-		// 		self.showGameOver = true;
-		// }
+		function destroyPlayer() {
+			self.playerMe.thisPlayer.$remove();
+			self.playerMe.thisPlayer.$save();
+		}
 
 
-		//////////////////////////////
-		// At Start Menu
-		//////////////////////////////
-
+	//////////////////////////////
+	// At Start Menu
+	//////////////////////////////
+		// Function to run when current player clicks on 'play'
 		function updatePlayer() {
 			self.playerMe.thisPlayer.$save();
 		}
 
+		// Function to run when current player clicks 'play'
 		function startGame() {
-			// Both players are online
+			// Player input check
 			if(self.playerMe.thisPlayer.name === "") {
 				self.nameError = "Please enter your name";
 			}
+			// Show message when waiting for opponent
 			else if(self.playerMe.otherPlayer.name === undefined
 						       || self.playerMe.otherPlayer.name === "") {
-				self.nameError	= undefined;
+				self.nameError	= null;
 				self.waitingPlayer = "Waiting for opponent";
 			}
 			else {
@@ -117,15 +113,15 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				// Switch views
 				self.toggleStartMenu();
 				self.toggleGameSpace();
-
 			}
 		}
 
-		//////////////////////////////
-		// During game play
-		//////////////////////////////
+	//////////////////////////////
+	// During game play
+	//////////////////////////////
 
 		function onSpaceClick(z, x, y) {
+			// Holds list of booleans of found, winning lines
 			var winner = [];
 
 			// Runs only on current player's turn
@@ -171,8 +167,8 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 						self.playerMe.thisPlayer.ties++
 						self.playerMe.otherPlayer.ties++
 
-						// No winner/cat's game
-						// Player with most losses or thisPlayer goes first in next game
+						// Player with most losses or player who clicked
+						// the for the cat's game goes first in next game
 						if(self.playerMe.thisPlayer.losses >= self.playerMe.otherPlayer.losses) {
 							self.playerMe.thisPlayer.theWinner = true;
 							self.playerMe.otherPlayer.theWinner = false;
@@ -198,12 +194,12 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 			}//first if
 		}
 
-		//////////////////////////////
-		// For Game Over Menu
-		//////////////////////////////
+	//////////////////////////////
+	// For Game Over Menu
+	//////////////////////////////
 
 		function playAgain() {
-			// Current player is the winner
+			// Run if current player is the winner
 			if(self.playerMe.thisPlayer.theWinner === true) {
 				// Update win record
 				if(self.lobby.theWinner !== "Tie Game")
@@ -221,6 +217,7 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 					self.lobby.$save();
 				}
 				else {
+					// Reset values for next game
 					self.playerMe.toggleTurn();
 					self.playerMe.saveToFB();
 					
@@ -230,8 +227,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 					self.lobby.theWinner = "";
 					self.lobby.waitingMsg = "";
 					self.lobby.$save();
-
-
 				}
 			}
 			// Current player is the loser
@@ -241,19 +236,20 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				var y = parseInt(self.ySize);
 				var ptsToConnect = parseInt(self.ptsToConnect);
 
+				// Player input check
 				if( z === undefined || x === undefined 
 					                || y === undefined || ptsToConnect === undefined) {
 
 					self.errorMsg = "Select settings for next game";
 				}
 				else {
-
+					// Loser creates new game
 					self.gameSpace.theGameSpace.$loaded(function() {
 						// Recreate board and algorithm
 						self.gameSpace 			= new GameSpace(z,x,y);
 						self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, z, x, y, ptsToConnect);
 
-						// Reset Game Over Message
+						// Reset game settings error message
 						self.errorMsg = null;
 
 						// Clear current player's win status
@@ -271,7 +267,7 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 							self.lobby.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
 						}
 						else {
-							//other player has clicked
+							// Reset values for next game
 							self.playerMe.otherPlayer.playerTurn = true;
 							self.playerMe.otherPlayer.theWinner = "";
 
@@ -285,13 +281,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				}
 			}
 		}
-
-
-		function destroyPlayer() {
-			self.playerMe.thisPlayer.$remove();
-			self.playerMe.thisPlayer.$save();
-		}
-
 	} // End of GameManager
 
 	return GameManager;

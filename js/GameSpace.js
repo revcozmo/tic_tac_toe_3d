@@ -4,15 +4,16 @@ angular
 
 GameSpaceFunc.$inject = ['$firebase'];
 
+// This creates the game board of the game. A 3D array is used
+// to simulate 3D space. My naming of the z-axis, x-axis, and
+// y-axis is different. The z-axis refers to the line going vertical.
+// The z-points refer to the number of planes the game.
+// The x-axis is the line going horiztonal.
+// The y-axis is the line that goes through the monitor.
 function GameSpaceFunc($firebase) {
 
 	var GameSpace = function(zSize, xSize, ySize) {
 		var self = this;
-
-		// A Firebase object that'll hold the 3D array
-		// Later, this.theGameSpace.gameSpace will be the property
-		// that holds the 3D array
-		this.theGameSpace;
 
 		// Method to create FireBase object
 		var makeGameSpaceFB = makeGameSpaceFB;
@@ -24,6 +25,7 @@ function GameSpaceFunc($firebase) {
 		var totalSpaces;
 		var occupiedSpaces	 = 0;
 
+		// Functions to create 3D array
 		this.create3DArray 	 = create3DArray;
 		this.initToEmptyStr	 = initToEmptyStr;
 		this.clearSpace		 = clearSpace;
@@ -31,7 +33,11 @@ function GameSpaceFunc($firebase) {
 		var calcTotalSpaces 	= calcTotalSpaces;
 		this.updateBoard	 	= updateBoard;
 
-		// Create the game space when GameSpace is instantiated
+		//////////////////
+		// Here, creating a Firebase object to contain the game 
+		// space information
+		////////////////////
+		this.theGameSpace;
 		this.theGameSpace = makeGameSpaceFB();
 		var tempArr		  = this.create3DArray();
 		tempArr		  	  = this.initToEmptyStr(tempArr);
@@ -39,23 +45,13 @@ function GameSpaceFunc($firebase) {
 		calcTotalSpaces();
 		this.theGameSpace.totalSpaces    = totalSpaces;
 		this.theGameSpace.occupiedSpaces = occupiedSpaces;
-		// this.theGameSpace.width = (Math.floor(100 / this.theGameSpace.gameSpace[0].length) - 1) + '%';
-		// this.theGameSpace.length = (Math.floor(100 / this.theGameSpace.gameSpace[0][0].length) - 1) + '%';
 		this.theGameSpace.$save();
 
-		var self = this;
 		this.theGameSpace.$loaded(function() {
 			self.theGameSpace.width = (Math.floor(100 / self.theGameSpace.gameSpace[0].length) - 1) + '%';
 			self.theGameSpace.length = (Math.floor(100 / self.theGameSpace.gameSpace[0][0].length) - 1) + '%';
 			self.theGameSpace.$save()
 		});
-
-		// Test of gathering indexes from angular 
-		function updateBoard(z,x,y, playerValue) {
-			this.theGameSpace.gameSpace[z][x][y] = playerValue;
-			this.theGameSpace.occupiedSpaces++;
-			this.theGameSpace.$save();
-		}
 
 		function makeGameSpaceFB() {
 			var ref = new Firebase("https://t33d.firebaseio.com/GameSpace");	
@@ -63,6 +59,14 @@ function GameSpaceFunc($firebase) {
 
 			return theGameSpace;
 		}
+
+		// Test of gathering indices of array of clicked space 
+		function updateBoard(z,x,y, playerValue) {
+			this.theGameSpace.gameSpace[z][x][y] = playerValue;
+			this.theGameSpace.occupiedSpaces++;
+			this.theGameSpace.$save();
+		}
+
 
 		// Create 3D Array to desired dimensions
 		function create3DArray() {
@@ -101,28 +105,10 @@ function GameSpaceFunc($firebase) {
 			this.theGameSpace = [];
 		}
 
-
 	//End of GameSpace
 	}
 
 	return GameSpace;
 }
-
-
-
-
-		// Create 2D matrix
-		// function createMatrix(numRows, numColumns, defaultValue){
-		// 	var matrix = []; 
-		// 	for(var i = 0; i < numRows; i++){
-  //  			var row = new Array(numColumns);
-  //  			for (var j=0; j < row.length; j++){
-  //   			row[j] = defaultValue;
-  //  			}
-  //  			matrix.push(row);
- 	// 		}
-		// 	return matrix;
-		// }
-
 
 

@@ -28,7 +28,6 @@
 	<body ng-controller='PlayT3DController as t3d'>
 		<!-- Start Menu -->
 		<main id="start-menu" ng-show="t3d.theGame.lobby.showStartMenu">
-		<!-- <main id='start-menu' ng-show="false"> -->
 			<h1>TIC TAC TOE<br/>3D</h1>
 
 			<br>
@@ -53,7 +52,6 @@
 
 		<!-- For gameBoard area -->
 		<main id="container" ng-show="t3d.theGame.lobby.showGameSpace">
-		<!-- <main id="container" ng-show="true"> -->
 
 			<h1>TIC TAC TOE<br/>3D</h1>
 
@@ -96,11 +94,14 @@
 				<h4>{{ t3d.theGame.playerMe.otherPlayer.ties }}</h4>
 			</section>
 
+
+			<!-- Game Over Menu -->
 			<section id="gameover" ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''
 										|| t3d.theGame.playerMe.otherPlayer.theWinner !== ''">
  				<h1> {{ t3d.theGame.lobby.theWinner }}</h1>
 				<h2>Play again?</h2>
 
+				<!-- Loser's menu. Chooses next game's settings -->
 				<section id="loser-selection" ng-show="(t3d.theGame.playerMe.thisPlayer.theWinner === false)">
 					<h3>Choose board dimensions</h3>
 
