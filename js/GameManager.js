@@ -98,7 +98,8 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 			if(self.playerMe.thisPlayer.name === "") {
 				self.nameError = "Please enter your name";
 			}
-			else if(self.playerMe.otherPlayer.name === undefined) {
+			else if(self.playerMe.otherPlayer.name === undefined
+						       || self.playerMe.otherPlayer.name === "") {
 				self.nameError	= undefined;
 				self.waitingPlayer = "Waiting for opponent";
 			}
@@ -116,6 +117,7 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				// Switch views
 				self.toggleStartMenu();
 				self.toggleGameSpace();
+
 			}
 		}
 
@@ -192,6 +194,7 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 						self.lobby.$save();
 					}
 				}//second if
+
 			}//first if
 		}
 
@@ -227,6 +230,8 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 					self.lobby.theWinner = "";
 					self.lobby.waitingMsg = "";
 					self.lobby.$save();
+
+
 				}
 			}
 			// Current player is the loser
@@ -280,7 +285,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				}
 			}
 		}
-
 
 
 		function destroyPlayer() {

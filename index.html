@@ -18,7 +18,6 @@
 		<script src="js/GameSpace.js" type="text/javascript"></script>
 		<script src="js/GameAlgorithm.js"type="text/javascript"></script>
 		<script src="js/Player.js" type="text/javascript"></script>
-		<!-- <script src="js/GameExtras.js" type="text/javascript"></script> -->
 		<script src="js/GameManager.js" type="text/javascript"></script>
 		<script src="js/PlayT3DController.js" type="text/javascript"></script>
 	</head>
@@ -29,13 +28,17 @@
 	<body ng-controller='PlayT3DController as t3d'>
 		<!-- Start Menu -->
 		<main id="start-menu" ng-show="t3d.theGame.lobby.showStartMenu">
+		<!-- <main id='start-menu' ng-show="false"> -->
 			<h1>TIC TAC TOE<br/>3D</h1>
 
-			<h3>Connect your pieces in a line in 3D space.</h3>
+			<br>
+			<h2>Connect spaces in a line in 3D space.</h2>
+
+			<br>
 
 			<section id="input-player-name">
 				<h3>Enter Your Name:</h3>
-				<input type="text" placeholder="PlayerName" 
+				<input type="text" placeholder="Player Name" 
 					   ng-model="t3d.theGame.playerMe.thisPlayer.name" />
 			</section>
 
@@ -52,7 +55,13 @@
 		<main id="container" ng-show="t3d.theGame.lobby.showGameSpace">
 		<!-- <main id="container" ng-show="true"> -->
 
-			<section id="player1">
+			<h1>TIC TAC TOE<br/>3D</h1>
+
+			<h4>Spaces to Connect: 
+				<span>{{ t3d.theGame.gameAlgorithm.gameAlgo.ptsToConnect }}</span>
+			</h4>
+
+			<section class="player1">
 				<h2>{{ t3d.theGame.playerMe.thisPlayer.name }}</h2>
 				<h3>Wins</h3>
 				<h4>{{ t3d.theGame.playerMe.thisPlayer.wins }}</h4>
@@ -70,14 +79,14 @@
 						     ng-style="{'height': t3d.theGame.gameSpace.theGameSpace.length}"
 						     ng-click="t3d.theGame.onSpaceClick($parent.$parent.$index,
 															  $parent.$index, $index)">
-							{{xRow[$index]}}
+							<h4>{{xRow[$index]}}</h4>
 						</div>
 					</div>
 
 				</div>
 			</div>
 
-			<section id="player2">
+			<section class="player2">
 				<h2>{{ t3d.theGame.playerMe.otherPlayer.name }}</h2>
 				<h3>Wins</h3>
 				<h4>{{ t3d.theGame.playerMe.otherPlayer.wins }}</h4>
@@ -90,7 +99,7 @@
 			<section id="gameover" ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''
 										|| t3d.theGame.playerMe.otherPlayer.theWinner !== ''">
  				<h1> {{ t3d.theGame.lobby.theWinner }}</h1>
-				<h3>Play again?</h3>
+				<h2>Play again?</h2>
 
 				<section id="loser-selection" ng-show="(t3d.theGame.playerMe.thisPlayer.theWinner === false)">
 					<h3>Choose board dimensions</h3>
@@ -99,21 +108,18 @@
 						<option value="">Choose number of planes</option>
 						<option value="3">3</option>
 						<option value="4">4</option>
-						<option value="5">5</option>
 					</select>
 
 					<select name="X Spaces" ng-model="t3d.theGame.xSize">
 						<option value="">Choose width</option>
 						<option value="3">3</option>
 						<option value="4">4</option>
-						<option value="5">5</option>
 					</select>
 
 					<select name="Y Spaces" ng-model="t3d.theGame.ySize">
 						<option value="">Choose length</option>
 						<option value="3">3</option>
 						<option value="4">4</option>
-						<option value="5">5</option>
 					</select>
 
 					<select name="pts-to-connect" ng-model="t3d.theGame.ptsToConnect">
