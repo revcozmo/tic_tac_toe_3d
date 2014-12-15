@@ -39,9 +39,16 @@ function GameSpaceFunc($firebase) {
 		calcTotalSpaces();
 		this.theGameSpace.totalSpaces    = totalSpaces;
 		this.theGameSpace.occupiedSpaces = occupiedSpaces;
-		this.theGameSpace.width = (Math.floor(100 / this.theGameSpace.gameSpace[0].length) - 1) + '%';
-		this.theGameSpace.length = (Math.floor(100 / this.theGameSpace.gameSpace[0][0].length) - 1) + '%';
+		// this.theGameSpace.width = (Math.floor(100 / this.theGameSpace.gameSpace[0].length) - 1) + '%';
+		// this.theGameSpace.length = (Math.floor(100 / this.theGameSpace.gameSpace[0][0].length) - 1) + '%';
 		this.theGameSpace.$save();
+
+		var self = this;
+		this.theGameSpace.$loaded(function() {
+			self.theGameSpace.width = (Math.floor(100 / self.theGameSpace.gameSpace[0].length) - 1) + '%';
+			self.theGameSpace.length = (Math.floor(100 / self.theGameSpace.gameSpace[0][0].length) - 1) + '%';
+			self.theGameSpace.$save()
+		});
 
 		// Test of gathering indexes from angular 
 		function updateBoard(z,x,y, playerValue) {

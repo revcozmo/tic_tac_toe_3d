@@ -139,10 +139,10 @@
 
 				<div ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''">
 					<button ng-click="t3d.theGame.playAgain()">Yes</button>
-					<button ng-click="">No</button>
+					<button ng-click="t3d.theGame.destroyPlayer()">No</button>
 				</div>
 
-				<h4>{{ t3d.theGame.waitingMsg }}</h4>
+				<h4>{{ t3d.theGame.lobby.waitingMsg }}</h4>
 
 			</section>
 

@@ -54,9 +54,6 @@ function GameAlgorithmFunc($firebase) {
 			self.gameAlgo.$save();
 		});
 
-// Here 
-// stop the un
-
 		function checkForWinner(z, x, y, space, playerValue) {
 			update(space);
 

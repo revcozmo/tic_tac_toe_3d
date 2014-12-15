@@ -46,7 +46,7 @@ function Player($firebase) {
 				if(self.checkPlayer2.name === undefined) 
 					self.thisPlayer = initPlayer2FB();
 					self.otherPlayer = self.checkPlayer;
-			};
+			}
 
 		});
 
@@ -54,7 +54,7 @@ function Player($firebase) {
 			self.checkPlayer.name = "";
 			self.checkPlayer.playerID = numPlayers;
 			self.checkPlayer.playerValue =  "x";
-			self.checkPlayer.playerTurn = true;
+			self.checkPlayer.playerTurn = false;
 			self.checkPlayer.theWinner = "";
 			self.checkPlayer.wins =  0;
 			self.checkPlayer.losses = 0;

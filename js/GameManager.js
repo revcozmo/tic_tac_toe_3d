@@ -20,29 +20,27 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		// Functions and properties to toggle menus
 		self.toggleStartMenu	= toggleStartMenu;
 		self.toggleGameSpace	= toggleGameSpace;
-		self.toggleGameOver		= toggleGameOver;
+		// self.toggleGameOver		= toggleGameOver;
 		self.showStartMenu		= true;
 		self.showGameSpace		= false;
 		self.showGameOver 		= false;
 
 		// Functions for Start Menu
-		self.toggleGameFull		= toggleGameFull;
 		self.updatePlayer 		= updatePlayer;
 		self.startGame 			= startGame;
- 		// self.deletePlayer 		= deletePlayer;
-
+ 		
  		// Functions for Game Board
  		self.onSpaceClick 		= onSpaceClick;
-		self.gameFull 			= false;
 
 		// Functions and properties for Game Over Menu
 		self.theWinner			= "";
 		self.playAgain 			= playAgain;
-
+		self.destroyPlayer 		= destroyPlayer;
 
 		// When Firebase data is loaded
 		self.lobby.$loaded (function(){
 			self.lobby.theWinner = "";
+			self.lobby.waitingMsg = "";
 
 			// Init numPlayers if it doesn't exist
 			if(self.lobby.numPlayers === undefined) {
@@ -73,15 +71,12 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				self.showGameSpace = true;
 		}
 
-		function toggleGameOver() {
-						console.log("intoggle")
-			if(self.showGameOver)
-				self.showGameOver = false;
-			else
-				self.showGameOver = true;
-			console.log(self.showGameOver)
-		}
-
+		// function toggleGameOver() {
+		// 	if(self.showGameOver)
+		// 		self.showGameOver = false;
+		// 	else
+		// 		self.showGameOver = true;
+		// }
 
 		function updatePlayer() {
 			self.playerMe.thisPlayer.$save();
@@ -106,18 +101,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 			// Switch views
 			self.toggleStartMenu();
 			self.toggleGameSpace();
-		}
-
-		// function deletePlayer() {
-		// 	self.playerMe.currentPlayer.$remove();
-		// 	self.playerMe.currentPlayer.$save();
-		// }
-
-		function toggleGameFull() {
-			if(self.gameFull)
-				self.gameFull = false;
-			else
-				self.gameFull = true;
 		}
 
 		//////////////////////////////
@@ -166,9 +149,21 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 					if(winner.indexOf(true) === -1 && 
 						self.gameSpace.theGameSpace.occupiedSpaces === self.gameSpace.theGameSpace.totalSpaces) {
 						
+						// Update ties record
+						self.playerMe.thisPlayer.ties++
+						self.playerMe.otherPlayer.ties++
+
 						// No winner/cat's game
-						self.playerMe.thisPlayer.theWinner = false;
-						self.playerMe.otherPlayer.theWinner = false;
+						// Player with most losses or thisPlayer goes first in next game
+						if(self.playerMe.thisPlayer.losses >= self.playerMe.otherPlayer.losses) {
+							self.playerMe.thisPlayer.theWinner = true;
+							self.playerMe.otherPlayer.theWinner = false;
+						}
+						else {
+							self.playerMe.thisPlayer.theWinner = false;
+							self.playerMe.otherPlayer.theWinner = true;	
+						}				
+
 						// Disable board
 						self.playerMe.thisPlayer.playerTurn = false;
 						self.playerMe.otherPlayer.playerTurn = false;
@@ -182,9 +177,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 					}
 				}//second if
 			}//first if
-
-			if(self.waitingMsg !== null)
-				self.waitingMsg = null;
 		}
 
 		//////////////////////////////
@@ -192,19 +184,37 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		//////////////////////////////
 
 		function playAgain() {
-			// Make buttons disappear and have a 'waiting sign'
-			// Toggle info
+			// Current player is the winner
 			if(self.playerMe.thisPlayer.theWinner === true) {
-				self.playerMe.updateWins();
-				self.playerMe.toggleTurn();
+				// Update win record
+				if(self.lobby.theWinner !== "Tie Game")
+					self.playerMe.updateWins();
+
+				// Clear player's winner status
 				self.playerMe.thisPlayer.theWinner = "";
+
+				// Update changes to FB
 				self.playerMe.saveToFB();
 
-				self.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
-			}
+				// If other player has not clicked to play yet
+				if(self.playerMe.otherPlayer.theWinner !== "") {
+					self.lobby.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
+					self.lobby.$save();
+				}
+				else {
+					self.playerMe.toggleTurn();
+					self.playerMe.saveToFB();
+					
+					self.playerMe.otherPlayer.theWinner = "";
+					self.playerMe.otherPlayer.$save();
 
-			
-			if(self.playerMe.thisPlayer.theWinner === false) {
+					self.lobby.theWinner = "";
+					self.lobby.waitingMsg = "";
+					self.lobby.$save();
+				}
+			}
+			// Current player is the loser
+			else if(self.playerMe.thisPlayer.theWinner === false) {
 				var z = parseInt(self.zSize);
 				var x = parseInt(self.xSize);
 				var y = parseInt(self.ySize);
@@ -216,8 +226,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 					self.errorMsg = "Select settings for next game";
 				}
 				else {
-					// Clear current board
-					// self.gameSpace.theGameSpace.$remove();
 
 					self.gameSpace.theGameSpace.$loaded(function() {
 						// Recreate board and algorithm
@@ -227,27 +235,41 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 						// Reset Game Over Message
 						self.errorMsg = null;
 
-						self.lobby.theWinner = "";
-						self.lobby.$save();
+						// Clear current player's win status
+						self.playerMe.thisPlayer.theWinner = "";			
 
-						// Reset values for next game
-						self.playerMe.updateLosses();
-						self.playerMe.thisPlayer.theWinner = "";
+						// Update losses
+						if(self.lobby.theWinner !== "Tie Game")
+							self.playerMe.updateLosses();
+
+						// Update changes to firebase
 						self.playerMe.saveToFB();
 
-						if(self.playerMe.otherPlayer.theWinner !== "")
-							self.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
+						// other player hasn't clicked play yet
+						if(self.playerMe.otherPlayer.theWinner !== "") {
+							self.lobby.waitingMsg = "Waiting for " + self.playerMe.otherPlayer.name;
+						}
+						else {
+							//other player has clicked
+							self.playerMe.otherPlayer.playerTurn = true;
+							self.playerMe.otherPlayer.theWinner = "";
+
+							self.playerMe.otherPlayer.$save();
+
+							self.lobby.theWinner = "";
+							self.lobby.waitingMsg = "";
+							self.lobby.$save();
+						}
 					});
-
 				}
-
 			}
-			// reset whatever values that need to be reset
 		}
 
-// Boolean for showing options.  Loser...but if cats game.  Higher ID number chooses
 
-		// function for winner who clicks no
+
+		function destroyPlayer() {
+			self.playerMe.thisPlayer.$destroy();
+		}
 
 	} // End of GameManager
 
