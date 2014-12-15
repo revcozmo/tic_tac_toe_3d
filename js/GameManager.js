@@ -10,8 +10,8 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		var self	= this;
 
 		// On GameManager instanstiation, Create Firebase object for lobby
-		self.lobby 				= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby"))
-									.$asObject();
+		self.lobby 	= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby"))
+							.$asObject();
 
 		// When Firebase data is loaded, initialize default values
 		self.lobby.$loaded (function(){
@@ -285,5 +285,3 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 	return GameManager;
 }
-
-
