@@ -28,13 +28,10 @@
 
 	<body ng-controller='PlayT3DController as t3d'>
 		<!-- Start Menu -->
-		<main id="start-menu" ng-show="t3d.theGame.showStartMenu">
+		<main id="start-menu" ng-show="t3d.theGame.lobby.showStartMenu">
 			<h1>TIC TAC TOE<br/>3D</h1>
 
-			<h3>Connect your pieces in a line in 3D space. <br/>
-<!-- 			    Pieces are not allowed on blocks. <br/>
-			    Mines destroy any pieces in its path.
- -->			</h3>
+			<h3>Connect your pieces in a line in 3D space.</h3>
 
 			<section id="input-player-name">
 				<h3>Enter Your Name:</h3>
@@ -42,23 +39,17 @@
 					   ng-model="t3d.theGame.playerMe.thisPlayer.name" />
 			</section>
 
-			<section id="player-icon">
-				<h3>Chose Your Piece</h3>
-				<img src="images/death-star-2-icon.png" />
-				<img src="images/enterprise-D2-icon.png" />
-				<img src="images/kirby-ufo.png" />
-				<img src="images/kodos.png" />
-			</section>
-
 			<button ng-click="t3d.theGame.updatePlayer(); t3d.theGame.startGame()"
-
-				>
+			        ng-hide="t3d.theGame.waitingPlayer !== undefined">
 				PLAY
 			</button>
+
+			<h3>{{ t3d.theGame.nameError }}</h3>
+			<h3>{{ t3d.theGame.waitingPlayer }}</h3>
 		</main>
 
 		<!-- For gameBoard area -->
-		<main id="container" ng-show="t3d.theGame.showGameSpace">
+		<main id="container" ng-show="t3d.theGame.lobby.showGameSpace">
 		<!-- <main id="container" ng-show="true"> -->
 
 			<section id="player1">
@@ -69,8 +60,6 @@
 				<h4>{{ t3d.theGame.playerMe.thisPlayer.losses }}</h4>
 				<h3>Ties</h3>
 				<h4>{{ t3d.theGame.playerMe.thisPlayer.ties }}</h4>
-				{{t3d.theGame.gameAlgorithm.gameAlgo.ptsToConnect}}
-				{{t3d.theGame.gameAlgorithm.checkingSpace.length}}
 			</section>
 
 			<div id="gameboard">

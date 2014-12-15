@@ -60,18 +60,18 @@ function GameAlgorithmFunc($firebase) {
 			var tempArray = [];
 
 			tempArray.push(checkLine( extractHorizontal(z, x, y),  playerValue ))
-			// tempArray.push(checkLine( extractVertical(z, x, y),	playerValue ))
-			// tempArray.push(checkLine( extractDiagonalOne(z, x, y), playerValue ))
-			// tempArray.push(checkLine( extractDiagonalTwo(z, x, y), playerValue ))
-			// tempArray.push(checkLine( extractYZVert(z, x, y), 	    playerValue ))
-			// tempArray.push(checkLine( extractYZDiagOne(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractYZDiagTwo(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractZXDiagOne(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractZXDiagTwo(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractDiag1D1(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractDiag1D2(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractDiag2D1(z, x, y), 	playerValue ))
-			// tempArray.push(checkLine( extractDiag2D2(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractVertical(z, x, y),	playerValue ))
+			tempArray.push(checkLine( extractDiagonalOne(z, x, y), playerValue ))
+			tempArray.push(checkLine( extractDiagonalTwo(z, x, y), playerValue ))
+			tempArray.push(checkLine( extractYZVert(z, x, y), 	    playerValue ))
+			tempArray.push(checkLine( extractYZDiagOne(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractYZDiagTwo(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractZXDiagOne(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractZXDiagTwo(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractDiag1D1(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractDiag1D2(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractDiag2D1(z, x, y), 	playerValue ))
+			tempArray.push(checkLine( extractDiag2D2(z, x, y), 	playerValue ))
 
 			return tempArray;
 		}

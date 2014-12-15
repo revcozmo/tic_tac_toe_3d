@@ -21,9 +21,9 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		self.toggleStartMenu	= toggleStartMenu;
 		self.toggleGameSpace	= toggleGameSpace;
 		// self.toggleGameOver		= toggleGameOver;
-		self.showStartMenu		= true;
-		self.showGameSpace		= false;
-		self.showGameOver 		= false;
+		// self.lobby.showStartMenu		= true;
+		// self.lobby.showGameSpace		= false;
+		// self.showGameOver 		= false;
 
 		// Functions for Start Menu
 		self.updatePlayer 		= updatePlayer;
@@ -39,8 +39,10 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 		// When Firebase data is loaded
 		self.lobby.$loaded (function(){
-			self.lobby.theWinner = "";
-			self.lobby.waitingMsg = "";
+			self.lobby.theWinner 		= "";
+			self.lobby.waitingMsg 		= "";
+			self.lobby.showStartMenu	= true;
+			self.lobby.showGameSpace	= false;
 
 			// Init numPlayers if it doesn't exist
 			if(self.lobby.numPlayers === undefined) {
@@ -58,17 +60,21 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 
 		function toggleStartMenu() {
-			if(self.showStartMenu)
-				self.showStartMenu = false;
+			if(self.lobby.showStartMenu)
+				self.lobby.showStartMenu = false;
 			else
-				self.showStartMenu = true;
+				self.lobby.showStartMenu = true;
+
+			self.lobby.$save()
 		}
 
 		function toggleGameSpace() {
-			if(self.showGameSpace)
-				self.showGameSpace = false;
+			if(self.lobby.showGameSpace)
+				self.lobby.showGameSpace = false;
 			else
-				self.showGameSpace = true;
+				self.lobby.showGameSpace = true;
+
+			self.lobby.$save()
 		}
 
 		// function toggleGameOver() {
@@ -78,29 +84,39 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 		// 		self.showGameOver = true;
 		// }
 
-		function updatePlayer() {
-			self.playerMe.thisPlayer.$save();
-		}
-
 
 		//////////////////////////////
 		// At Start Menu
 		//////////////////////////////
 
+		function updatePlayer() {
+			self.playerMe.thisPlayer.$save();
+		}
+
 		function startGame() {
-			// Player ID of lower number starts game
-			if(self.playerMe.thisPlayer.playerID < self.playerMe.otherPlayer.playerID) {
-				self.playerMe.thisPlayer.playerTurn = true;
-				self.playerMe.thisPlayer.$save();
+			// Both players are online
+			if(self.playerMe.thisPlayer.name === "") {
+				self.nameError = "Please enter your name";
+			}
+			else if(self.playerMe.otherPlayer.name === undefined) {
+				self.nameError	= undefined;
+				self.waitingPlayer = "Waiting for opponent";
 			}
 			else {
-				self.playerMe.otherPlayer.playerTurn = true;
-				self.playerMe.otherPlayer.$save();
-			}
+				// Player ID of lower number starts game
+				if(self.playerMe.thisPlayer.playerID < self.playerMe.otherPlayer.playerID) {
+					self.playerMe.thisPlayer.playerTurn = true;
+					self.playerMe.thisPlayer.$save();
+				}
+				else {
+					self.playerMe.otherPlayer.playerTurn = true;
+					self.playerMe.otherPlayer.$save();
+				}
 
-			// Switch views
-			self.toggleStartMenu();
-			self.toggleGameSpace();
+				// Switch views
+				self.toggleStartMenu();
+				self.toggleGameSpace();
+			}
 		}
 
 		//////////////////////////////
@@ -268,7 +284,8 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 
 
 		function destroyPlayer() {
-			self.playerMe.thisPlayer.$destroy();
+			self.playerMe.thisPlayer.$remove();
+			self.playerMe.thisPlayer.$save();
 		}
 
 	} // End of GameManager
