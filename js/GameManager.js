@@ -281,6 +281,14 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
 				}
 			}
 		}
+
+
+
+		window.onbeforeunload = function() {
+			self.playerMe.thisPlayer.$remove()
+			self.playerMe.thisPlayer.$save();
+		};
+
 	} // End of GameManager
 
 	return GameManager;
