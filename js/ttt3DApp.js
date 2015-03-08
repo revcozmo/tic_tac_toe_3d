@@ -11,7 +11,7 @@ function MainRouter($stateProvider, $urlRouterProvider) {
             templateUrl: "lounge.html"
         })
         .state('gamespace', {
-            url: 'gamespace',
+            url: '/gamespace',
             templateUrl: 'gamespace.html'
         })
 };

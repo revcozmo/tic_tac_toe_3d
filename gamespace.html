@@ -1,6 +1,97 @@
-<h1>the game sapce</h1>
-<style>
-    h1 {
-        color: red;
-    }
-</style>
+<h1 style="color: red;">the game space</h1>
+
+<!-- For gameBoard area -->
+<main id="container" ng-show="t3d.theGame.lobby.showGameSpace">
+
+    <h1>TIC TAC TOE<br/>3D</h1>
+
+    <h4>Spaces to Connect: 
+        <span>{{ t3d.theGame.gameAlgorithm.gameAlgo.ptsToConnect }}</span>
+    </h4>
+
+    <section class="player1">
+        <h2>{{ t3d.theGame.playerMe.thisPlayer.name }}</h2>
+        <h3>Wins</h3>
+        <h4>{{ t3d.theGame.playerMe.thisPlayer.wins }}</h4>
+        <h3>Losses</h3>
+        <h4>{{ t3d.theGame.playerMe.thisPlayer.losses }}</h4>
+        <h3>Ties</h3>
+        <h4>{{ t3d.theGame.playerMe.thisPlayer.ties }}</h4>
+    </section>
+
+    <div id="gameboard">
+        <div class="plane" ng-repeat="zPlane in t3d.theGame.gameSpace.theGameSpace.gameSpace track by $index">
+            <div ng-repeat="xRow in zPlane track by $index" 
+                 ng-style="{'width': t3d.theGame.gameSpace.theGameSpace.width}">
+                <div ng-repeat="ySpace in xRow track by $index" 
+                     ng-style="{'height': t3d.theGame.gameSpace.theGameSpace.length}"
+                     ng-click="t3d.theGame.onSpaceClick($parent.$parent.$index,
+                                                      $parent.$index, $index)">
+                    <h4>{{xRow[$index]}}</h4>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <section class="player2">
+        <h2>{{ t3d.theGame.playerMe.otherPlayer.name }}</h2>
+        <h3>Wins</h3>
+        <h4>{{ t3d.theGame.playerMe.otherPlayer.wins }}</h4>
+        <h3>Losses</h3>
+        <h4>{{ t3d.theGame.playerMe.otherPlayer.losses }}</h4>
+        <h3>Ties</h3>
+        <h4>{{ t3d.theGame.playerMe.otherPlayer.ties }}</h4>
+    </section>
+
+
+    <!-- Game Over Menu -->
+    <section id="gameover" ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''
+                                || t3d.theGame.playerMe.otherPlayer.theWinner !== ''">
+        <h1> {{ t3d.theGame.lobby.theWinner }}</h1>
+        <h2>Play again?</h2>
+
+        <!-- Loser's menu. Chooses next game's settings -->
+        <section id="loser-selection" ng-show="(t3d.theGame.playerMe.thisPlayer.theWinner === false)">
+            <h3>Choose board dimensions</h3>
+
+            <select name="Z Spaces" ng-model="t3d.theGame.zSize">
+                <option value="">Choose number of planes</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <select name="X Spaces" ng-model="t3d.theGame.xSize">
+                <option value="">Choose width</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <select name="Y Spaces" ng-model="t3d.theGame.ySize">
+                <option value="">Choose length</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <select name="pts-to-connect" ng-model="t3d.theGame.ptsToConnect">
+                <option value="">Spaces to Connect</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+
+            <h4>{{ t3d.theGame.errorMsg }}</h4>
+
+        </section>
+
+        <div ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''">
+            <button ng-click="t3d.theGame.playAgain()">Yes</button>
+            <button ng-click="t3d.theGame.destroyPlayer()">No</button>
+        </div>
+
+        <h4>{{ t3d.theGame.lobby.waitingMsg }}</h4>
+
+    </section>
+
+
+
+</main>

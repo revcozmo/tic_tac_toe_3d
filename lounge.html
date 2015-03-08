@@ -1,6 +1,21 @@
-<h1>this is the lounge</h1>
-<style>
-    h1 {
-        color: red;
-    }
-</style>
+<!-- Start Menu -->     
+<main id="start-menu" ng-show="t3d.theGame.lobby.showStartMenu">
+    <h1>TIC TAC TOE<br/>3D</h1>
+    <br>
+    <h2>Connect spaces in a line in 3D space.</h2>
+    <br>
+    
+    <section id="input-player-name">
+        <h3>Enter Your Name:</h3>
+        <input type="text" placeholder="Player Name" 
+               ng-model="t3d.theGame.playerMe.thisPlayer.name" />
+    </section>
+
+    <button ng-click="t3d.theGame.updatePlayer(); t3d.theGame.startGame()"
+            ng-hide="t3d.theGame.waitingPlayer !== undefined">
+        PLAY
+    </button>
+
+    <h3>{{ t3d.theGame.nameError }}</h3>
+    <h3>{{ t3d.theGame.waitingPlayer }}</h3>
+</main>

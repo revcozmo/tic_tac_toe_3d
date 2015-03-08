@@ -2,9 +2,9 @@ angular
 	.module('ttt3DApp')
 	.factory('GameManager', GameManagerFunc)
 
-GameManagerFunc.$inject = ['$firebase', 'GameSpace', 'GameAlgorithm', 'Player'];
+GameManagerFunc.$inject = ['$firebase', 'GameSpace', 'GameAlgorithm', 'Player', '$state'];
 
-function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player) {
+function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 
 	var GameManager = function() {
 		var self	= this;
