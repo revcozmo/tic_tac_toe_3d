@@ -15,7 +15,7 @@
 		<!-- AngularFire -->
 		<script src="https://cdn.firebase.com/libs/angularfire/0.9.0/angularfire.min.js"></script>
 		<!-- Angular Ui-Router -->
-		<script type="js/angular-ui-router.js" type="text/javascript"></script>
+		<script src="js/angular-ui-router.min.js" type="text/javascript"></script>	
 		<script src="js/ttt3DApp.js" type="text/javascript"></script>
 		<script src="js/GameSpace.js" type="text/javascript"></script>
 		<script src="js/GameAlgorithm.js"type="text/javascript"></script>
@@ -28,7 +28,10 @@
 
 
 	<body ng-controller='PlayT3DController as t3d'>
-		<!-- Start Menu -->
+
+	<div ui-view></div>
+
+		<!-- Start Menu -->		
 		<main id="start-menu" ng-show="t3d.theGame.lobby.showStartMenu">
 			<h1>TIC TAC TOE<br/>3D</h1>
 
