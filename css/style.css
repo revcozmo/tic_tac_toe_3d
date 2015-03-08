@@ -158,8 +158,11 @@ span {
 #gameboard .plane {
 	height: 30%;
 	width: 100%;
-	transform: skew(-35deg, 0deg);
 	border: 1px dashed red;
+
+	transform: skew(-35deg, 0deg);
+	-ms-transform: skew(-35deg, 0deg);
+	-webkit-transform: skew(-35deg, 0deg);
 }
 
 
