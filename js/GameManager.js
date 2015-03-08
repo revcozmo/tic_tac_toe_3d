@@ -10,15 +10,12 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 		var self	= this;
 
 		// On GameManager instanstiation, Create Firebase object for lobby
-		self.lobby 	= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby"))
-							.$asObject();
+		self.lobby 	= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby")).$asObject();
 
 		// When Firebase data is loaded, initialize default values
 		self.lobby.$loaded (function(){
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
-			self.lobby.showStartMenu	= true;
-			self.lobby.showGameSpace	= false;
 
 			// Init numPlayers if it doesn't exist
 			if(self.lobby.numPlayers === undefined) {
@@ -39,10 +36,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 		self.gameSpace 			= new GameSpace(3,3,3);
 		self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
 
-		// Functions and properties to toggle menus
-		self.toggleStartMenu	= toggleStartMenu;
-		self.toggleGameSpace	= toggleGameSpace;
-
 		// Functions for Start Menu
 		self.updatePlayer 		= updatePlayer;
 		self.startGame 			= startGame;
@@ -53,25 +46,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 		// Functions for Game Over Menu
 		self.playAgain 			= playAgain;
 		self.destroyPlayer 		= destroyPlayer;
-
-
-		function toggleStartMenu() {
-			if(self.lobby.showStartMenu)
-				self.lobby.showStartMenu = false;
-			else
-				self.lobby.showStartMenu = true;
-
-			self.lobby.$save()
-		}
-
-		function toggleGameSpace() {
-			if(self.lobby.showGameSpace)
-				self.lobby.showGameSpace = false;
-			else
-				self.lobby.showGameSpace = true;
-
-			self.lobby.$save()
-		}
 
 		function destroyPlayer() {
 			self.playerMe.thisPlayer.$remove();
@@ -109,10 +83,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 					self.playerMe.otherPlayer.playerTurn = true;
 					self.playerMe.otherPlayer.$save();
 				}
-
-				// Switch views
-				self.toggleStartMenu();
-				self.toggleGameSpace();
 			}
 		}
 
