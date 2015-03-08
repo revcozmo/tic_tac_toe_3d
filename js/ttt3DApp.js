@@ -1,2 +1,2 @@
 angular
-.module('ttt3DApp', ['firebase'])
+.module('ttt3DApp', ['firebase', 'ui.router'])
