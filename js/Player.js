@@ -26,16 +26,19 @@ function Player($firebase) {
 
 		// On Player object instantiation, 
 		// set current player and opponentdata
-		self.checkPlayer.$loaded(function() {
-			if(self.checkPlayer.name === undefined) {
+		self.checkPlayer.$loaded(function(data) {
+			if(self.checkPlayer.playerID === undefined) {
 
 				self.thisPlayer = initPlayer1FB();
 				self.otherPlayer = self.checkPlayer2;
+				instantiateWatch();
 			}
 			else {
-				if(self.checkPlayer2.name === undefined) 
+				if(self.checkPlayer2.playerID === undefined) {
 					self.thisPlayer = initPlayer2FB();
 					self.otherPlayer = self.checkPlayer;
+					instantiateWatch();
+				}
 			}
 		});
 
@@ -79,6 +82,22 @@ function Player($firebase) {
 
 			self.checkPlayer2.$save();
 			return self.checkPlayer2;
+		}
+
+		function instantiateWatch() {
+		    self.watchP1 = self.thisPlayer.$watch(function() {
+		        if(self.thisPlayer.isReady === true && self.otherPlayer.isReady === true) {
+		            console.log("p1 watch!")
+		            $state.go('gamespace')
+		        }
+		    });
+
+		    self.watchP2 = self.otherPlayer.$watch(function() {
+		        if(self.thisPlayer.isReady === true && self.otherPlayer.isReady === true) {
+		            console.log("p2 watch!")
+		            $state.go('gamespace')
+		        }
+		    });
 		}
 
 		function toggleTurn() {
