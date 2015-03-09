@@ -1,5 +1,5 @@
 angular
-.module('ttt3DApp', ['firebase', 'ui.router'])
+.module('ttt3DApp', ['firebase', 'ui.router', 'ngAnimate'])
 .config(MainRouter)
 
 function MainRouter($stateProvider, $urlRouterProvider) {
