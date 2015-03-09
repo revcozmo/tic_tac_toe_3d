@@ -43,13 +43,13 @@
 
 
     <!-- Game Over Menu -->
-    <section id="gameover" ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''
+    <section id="gameover" ng-if="t3d.theGame.playerMe.thisPlayer.theWinner !== ''
                                 || t3d.theGame.playerMe.otherPlayer.theWinner !== ''">
         <h1> {{ t3d.theGame.lobby.theWinner }}</h1>
         <h2>Play again?</h2>
 
         <!-- Loser's menu. Chooses next game's settings -->
-        <section id="loser-selection" ng-show="(t3d.theGame.playerMe.thisPlayer.theWinner === false)">
+        <section id="loser-selection" ng-if="(t3d.theGame.playerMe.thisPlayer.theWinner === false)">
             <h3>Choose board dimensions</h3>
 
             <select name="Z Spaces" ng-model="t3d.theGame.zSize">
@@ -80,7 +80,7 @@
 
         </section>
 
-        <div ng-show="t3d.theGame.playerMe.thisPlayer.theWinner !== ''">
+        <div ng-if="t3d.theGame.playerMe.thisPlayer.theWinner !== ''">
             <button ng-click="t3d.theGame.playAgain()">Yes</button>
             <button ng-click="t3d.theGame.destroyPlayer()">No</button>
         </div>

@@ -103,8 +103,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 			}
 		}
 
-console.log($state)
-
 	//////////////////////////////
 	// During game play
 	//////////////////////////////

@@ -12,7 +12,7 @@
     </section>
 
     <button ng-click="t3d.theGame.updatePlayer(); t3d.theGame.startGame()"
-            ng-hide="t3d.theGame.waitingPlayer !== undefined">
+            ng-if="t3d.theGame.waitingPlayer === undefined">
         PLAY
     </button>
 
