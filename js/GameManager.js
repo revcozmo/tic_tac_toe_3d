@@ -20,7 +20,6 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 
 			if(self.lobby.gameFull === undefined) {
 				self.lobby.gameFull = false;
-				self.lobby.gameInProgress = false;
 				self.lobby.numPlayers = 0;
 			}
 
@@ -58,21 +57,10 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			console.log("state chaged!")
 			if($state.is('gamespace') && self.playerMe.spectator === false) 
 			{
-				self.lobby.gameInProgress = true;
-				self.lobby.$save();
 				self.playerMe.unwatchP1();
 				self.playerMe.unwatchP2();
 			}
 		});
-
-
-		window.onbeforeunload = function() {
-			self.playerMe.thisPlayer.$remove()
-			self.lobby.gameFull = false;
-			self.lobby.gameInProgress = false;
-			self.lobby.$save();
-			self.playerMe.thisPlayer.$save();
-		};
 
 	//////////////////////////////
 	// At Start Menu
