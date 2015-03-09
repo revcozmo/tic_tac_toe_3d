@@ -26,6 +26,9 @@ function Player($firebaseObject, $state) {
 		// Player data of opponent
 		self.otherPlayer;
 
+		// Spectator
+		self.spectator 	= false;
+
 		// On Player object instantiation, 
 		// set current player and opponentdata
 		self.checkPlayer.$loaded(function(data) {
@@ -47,6 +50,7 @@ function Player($firebaseObject, $state) {
 				}
 				else {
 					if(self.checkPlayer2.playerID === undefined) {
+
 						self.thisPlayer = initPlayer2FB();
 						self.thisPlayerConnections = self.checkPlayer2Connections;
 						self.otherPlayer = self.checkPlayer;
@@ -59,6 +63,10 @@ function Player($firebaseObject, $state) {
 								self.thisPlayerConnections.set(true);
 							}
 						});
+					}
+					else {
+						self.spectator = true;
+						$state.go('gamefull')
 					}
 				}
 			});

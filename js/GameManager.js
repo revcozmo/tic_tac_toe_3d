@@ -18,21 +18,16 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
 
-
 			if(self.lobby.gameFull === undefined) {
 				self.lobby.gameFull = false;
 				self.lobby.gameInProgress = false;
 				self.lobby.numPlayers = 0;
 			}
 
-			if(!self.lobby.gameFull) {
-				self.lobby.numPlayers += 1;
-				self.lobby.$save();
-				self.playerMe	= new Player(self.lobby.numPlayers);
-			}
-			else {
-				$state.go('gamespace')
-			}
+			self.lobby.numPlayers += 1;
+			self.lobby.$save();
+
+			self.playerMe	= new Player(self.lobby.numPlayers);
 		});
 
 
@@ -52,15 +47,12 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			self.playerMe.thisPlayer.$save();
 		}
 
-
 		// Run when state changes.
 		// Unregister watch functions in Player.js
 		$rootScope.$on('$stateChangeSuccess', function(){
 			console.log("state chaged!")
-			if($state.is('gamespace') && !self.lobby.gameInProgress) 
+			if($state.is('gamespace') && self.playerMe.spectator === false) 
 			{
-
-				console.log("in gamespace");
 				self.lobby.gameInProgress = true;
 				self.lobby.$save();
 				self.playerMe.unwatchP1();

@@ -14,4 +14,8 @@ function MainRouter($stateProvider, $urlRouterProvider) {
             url: '/gamespace',
             templateUrl: 'gamespace.html'
         })
+        .state('gamefull', {
+            url: '/gamefull',
+            templateUrl: 'gamefull.html'
+        });
 };
