@@ -2,7 +2,7 @@ angular
 	.module('ttt3DApp')
 	.factory('GameSpace', GameSpaceFunc)
 
-GameSpaceFunc.$inject = ['$firebase'];
+GameSpaceFunc.$inject = ['$firebaseObject'];
 
 // This creates the game board of the game. A 3D array is used
 // to simulate 3D space. My naming of the z-axis, x-axis, and
@@ -10,7 +10,7 @@ GameSpaceFunc.$inject = ['$firebase'];
 // The z-points refer to the number of planes the game.
 // The x-axis is the line going horiztonal.
 // The y-axis is the line that goes through the monitor.
-function GameSpaceFunc($firebase) {
+function GameSpaceFunc($firebaseObject) {
 
 	var GameSpace = function(zSize, xSize, ySize) {
 		var self = this;
@@ -55,7 +55,7 @@ function GameSpaceFunc($firebase) {
 
 		function makeGameSpaceFB() {
 			var ref = new Firebase("https://t33d.firebaseio.com/GameSpace");	
-			var theGameSpace = $firebase(ref).$asObject();
+			var theGameSpace = $firebaseObject(ref);
 
 			return theGameSpace;
 		}

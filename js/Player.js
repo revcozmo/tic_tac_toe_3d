@@ -2,22 +2,24 @@ angular
 	.module('ttt3DApp')
 	.factory('Player', Player)
 
-Player.$inject = ['$firebase', '$state'];
+Player.$inject = ['$firebaseObject', '$state'];
 
 // One Player object contains the data of both 
 // the current player(thisPlayer) and the opponent (otherPlayer).
 // This is done to dyanmically change both player's data in
 // a single turn
-function Player($firebase, $state) {
+function Player($firebaseObject, $state) {
 	
 	var Player = function(numPlayers) {
 		var self = this;
 
 		// Gather Firebase data of two players
-		self.checkPlayer 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player"))
-								.$asObject();
-		self.checkPlayer2 	= $firebase(new Firebase("https://t33d.firebaseio.com/2Players/player2"))
-								.$asObject();
+		self.checkPlayer 	= $firebaseObject(new Firebase("https://t33d.firebaseio.com/2Players/player"));
+		self.checkPlayerConnections 	= new Firebase("https://t33d.firebaseio.com/2Players/player/connections");
+		self.checkPlayer2 	= $firebaseObject(new Firebase("https://t33d.firebaseio.com/2Players/player2"));
+		self.checkPlayer2Connections 	= new Firebase("https://t33d.firebaseio.com/2Players/player2/connections");
+
+		var connectedRef = new Firebase("https://t33d.firebaseio.com/.info/connected");
 
 		// Player data of current player
 		self.thisPlayer;
@@ -27,19 +29,39 @@ function Player($firebase, $state) {
 		// On Player object instantiation, 
 		// set current player and opponentdata
 		self.checkPlayer.$loaded(function(data) {
-			if(self.checkPlayer.playerID === undefined) {
+			self.checkPlayer2.$loaded(function(data) {
+				if(self.checkPlayer.playerID === undefined) {
 
-				self.thisPlayer = initPlayer1FB();
-				self.otherPlayer = self.checkPlayer2;
-				instantiateWatch();
-			}
-			else {
-				if(self.checkPlayer2.playerID === undefined) {
-					self.thisPlayer = initPlayer2FB();
-					self.otherPlayer = self.checkPlayer;
+					self.thisPlayer = initPlayer1FB();
+					self.thisPlayerConnections = self.checkPlayerConnections;
+					self.otherPlayer = self.checkPlayer2;
+					self.otherPlayerConnections = self.checkPlayer2Connections;
 					instantiateWatch();
+
+					connectedRef.on('value', function(snapshot) {
+						if (snapshot.val()) {
+							self.thisPlayerConnections.onDisconnect().remove();
+							self.thisPlayerConnections.set(true);
+						}
+					});
 				}
-			}
+				else {
+					if(self.checkPlayer2.playerID === undefined) {
+						self.thisPlayer = initPlayer2FB();
+						self.thisPlayerConnections = self.checkPlayer2Connections;
+						self.otherPlayer = self.checkPlayer;
+						self.otherPlayerConnections = self.checkPlayerConnections;
+						instantiateWatch();
+
+						connectedRef.on('value', function(snapshot) {
+							if (snapshot.val()) {
+								self.thisPlayerConnections.onDisconnect().remove();
+								self.thisPlayerConnections.set(true);
+							}
+						});
+					}
+				}
+			});
 		});
 
 
@@ -88,14 +110,14 @@ function Player($firebase, $state) {
 
 		function instantiateWatch() {
 		    self.unwatchP1 = self.thisPlayer.$watch(function() {
-		        if(self.thisPlayer.isReady === true && self.otherPlayer.isReady === true) {
+		        if(self.thisPlayer.isReady && self.otherPlayer.isReady) {
 		            console.log("p1 watch!")
 		            $state.go('gamespace')
 		        }
 		    });
 
 		    self.unwatchP2 = self.otherPlayer.$watch(function() {
-		        if(self.thisPlayer.isReady === true && self.otherPlayer.isReady === true) {
+		        if(self.thisPlayer.isReady && self.otherPlayer.isReady) {
 		            console.log("p2 watch!")
 		            $state.go('gamespace')
 		        }

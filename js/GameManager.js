@@ -2,45 +2,39 @@ angular
 	.module('ttt3DApp')
 	.factory('GameManager', GameManagerFunc)
 
-GameManagerFunc.$inject = ['$firebase', 'GameSpace', 'GameAlgorithm', 'Player', '$state', '$rootScope'];
+GameManagerFunc.$inject = ['$firebaseObject', 'GameSpace', 'GameAlgorithm', 'Player', '$state', '$rootScope'];
 
-function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $rootScope) {
+function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $state, $rootScope) {
 
 	var GameManager = function() {
 		var self	= this;
 
 		// On GameManager instanstiation, Create Firebase object for lobby
-		self.lobby 	= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby")).$asObject();
+		var ref = new Firebase("https://t33d.firebaseio.com/Lobby");
+		self.lobby 	= $firebaseObject(ref);
 
 		// When Firebase data is loaded, initialize default values
 		self.lobby.$loaded(function(data){
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
 
-			if(self.lobby.numPlayers >= 2) {
-				$state.go('gamespace')
-			}
-			// Init numPlayers if it doesn't exist
-			else if(self.lobby.numPlayers === undefined || self.lobby.numPlayers === 0) {
-				self.lobby.numPlayers = 1;
-				self.lobby.$save();
 
-				// Create player. Use numPlayers as player's ID
-			 	self.playerMe	= new Player(self.lobby.numPlayers);
+			if(self.lobby.gameFull === undefined) {
+				self.lobby.gameFull = false;
+				self.lobby.gameInProgress = false;
+				self.lobby.numPlayers = 0;
 			}
-			else {
+
+			if(!self.lobby.gameFull) {
 				self.lobby.numPlayers += 1;
 				self.lobby.$save();
-
-				// Create player. Use numPlayers as player's ID
-			 	self.playerMe	= new Player(self.lobby.numPlayers);
+				self.playerMe	= new Player(self.lobby.numPlayers);
+			}
+			else {
+				$state.go('gamespace')
 			}
 		});
 
-
-		// Create GameSpace and GameAlgorithm objects
-		self.gameSpace 			= new GameSpace(3,3,3);
-		self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
 
 		// Functions for Start Menu
 		self.updatePlayer 		= updatePlayer;
@@ -63,8 +57,12 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 		// Unregister watch functions in Player.js
 		$rootScope.$on('$stateChangeSuccess', function(){
 			console.log("state chaged!")
-			if($state.is('gamespace') && self.lobby.numPlayers === 2) {
+			if($state.is('gamespace') && !self.lobby.gameInProgress) 
+			{
+
 				console.log("in gamespace");
+				self.lobby.gameInProgress = true;
+				self.lobby.$save();
 				self.playerMe.unwatchP1();
 				self.playerMe.unwatchP2();
 			}
@@ -73,11 +71,9 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 
 		window.onbeforeunload = function() {
 			self.playerMe.thisPlayer.$remove()
-
-			if(self.lobby.numPlayers < 3 && self.lobby.numPlayers > 0) {
-				self.lobby.numPlayers -= 1;
-				self.lobby.$save();
-			}
+			self.lobby.gameFull = false;
+			self.lobby.gameInProgress = false;
+			self.lobby.$save();
 			self.playerMe.thisPlayer.$save();
 		};
 
@@ -102,6 +98,10 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 				self.waitingPlayer = "Waiting for opponent";
 				self.playerMe.thisPlayer.isReady = true;
 				self.playerMe.thisPlayer.$save();
+				// Create GameSpace and GameAlgorithm objects
+				self.gameSpace 			= new GameSpace(3,3,3);
+				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
+
 			}
 			else {
 				// Player ID of lower number starts game
@@ -114,8 +114,15 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 					self.playerMe.otherPlayer.$save();
 				}
 
+
+				// Create GameSpace and GameAlgorithm objects
+				self.gameSpace 			= new GameSpace(3,3,3);
+				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
+
 				self.playerMe.thisPlayer.isReady = true;
 				self.playerMe.thisPlayer.$save();
+				self.lobby.gameFull = true;
+				self.lobby.$save();
 			}
 		}
 

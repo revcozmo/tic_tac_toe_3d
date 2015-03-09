@@ -2,9 +2,9 @@ angular
 	.module('ttt3DApp')
 	.factory('GameAlgorithm', GameAlgorithmFunc)
 
-GameAlgorithmFunc.$inject = ['$firebase'];
+GameAlgorithmFunc.$inject = ['$firebaseObject'];
 
-function GameAlgorithmFunc($firebase) {
+function GameAlgorithmFunc($firebaseObject) {
 
 	// This algorithm takes in the 3D array to check for a winner.
 	// Take a look at GameSpace at how I labeled the 3D space.
@@ -43,7 +43,7 @@ function GameAlgorithmFunc($firebase) {
 		///////////////////////
 		function makeGameSpaceFB() {
 			var ref = new Firebase("https://t33d.firebaseio.com/GameAlgorithm");	
-			var connect = $firebase(ref).$asObject();
+			var connect = $firebaseObject(ref);
 
 			return connect;
 		}
