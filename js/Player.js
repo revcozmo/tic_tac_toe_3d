@@ -2,13 +2,13 @@ angular
 	.module('ttt3DApp')
 	.factory('Player', Player)
 
-Player.$inject = ['$firebase'];
+Player.$inject = ['$firebase', '$state'];
 
 // One Player object contains the data of both 
 // the current player(thisPlayer) and the opponent (otherPlayer).
 // This is done to dyanmically change both player's data in
 // a single turn
-function Player($firebase) {
+function Player($firebase, $state) {
 	
 	var Player = function(numPlayers) {
 		var self = this;
@@ -59,6 +59,7 @@ function Player($firebase) {
 		function initPlayer1FB() {
 			self.checkPlayer.name = "";
 			self.checkPlayer.playerID = numPlayers;
+			self.checkPlayer.isReady = false;
 			self.checkPlayer.playerValue =  "x";
 			self.checkPlayer.playerTurn = false;
 			self.checkPlayer.theWinner = "";
@@ -73,6 +74,7 @@ function Player($firebase) {
 		function initPlayer2FB() {
 			self.checkPlayer2.name = "";
 			self.checkPlayer2.playerID = numPlayers;
+			self.checkPlayer2.isReady = false;
 			self.checkPlayer2.playerValue =  "o";
 			self.checkPlayer2.playerTurn = false;
 			self.checkPlayer2.theWinner = "";
@@ -85,14 +87,14 @@ function Player($firebase) {
 		}
 
 		function instantiateWatch() {
-		    self.watchP1 = self.thisPlayer.$watch(function() {
+		    self.unwatchP1 = self.thisPlayer.$watch(function() {
 		        if(self.thisPlayer.isReady === true && self.otherPlayer.isReady === true) {
 		            console.log("p1 watch!")
 		            $state.go('gamespace')
 		        }
 		    });
 
-		    self.watchP2 = self.otherPlayer.$watch(function() {
+		    self.unwatchP2 = self.otherPlayer.$watch(function() {
 		        if(self.thisPlayer.isReady === true && self.otherPlayer.isReady === true) {
 		            console.log("p2 watch!")
 		            $state.go('gamespace')

@@ -2,9 +2,9 @@ angular
 	.module('ttt3DApp')
 	.factory('GameManager', GameManagerFunc)
 
-GameManagerFunc.$inject = ['$firebase', 'GameSpace', 'GameAlgorithm', 'Player', '$state'];
+GameManagerFunc.$inject = ['$firebase', 'GameSpace', 'GameAlgorithm', 'Player', '$state', '$rootScope'];
 
-function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
+function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $rootScope) {
 
 	var GameManager = function() {
 		var self	= this;
@@ -53,6 +53,18 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 		}
 
 
+		// Run when state changes.
+		// Unregister watch functions in Player.js
+		$rootScope.$on('$stateChangeSuccess', function(){
+			console.log("state chaged!")
+			if($state.is('gamespace')) {
+				console.log("in gamespace");
+				self.playerMe.unwatchP1();
+				self.playerMe.unwatchP2();
+			}
+		});
+
+
 	//////////////////////////////
 	// At Start Menu
 	//////////////////////////////
@@ -72,6 +84,8 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 						       || self.playerMe.otherPlayer.name === "") {
 				self.nameError	= null;
 				self.waitingPlayer = "Waiting for opponent";
+				self.playerMe.thisPlayer.isReady = true;
+				self.playerMe.thisPlayer.$save();
 			}
 			else {
 				// Player ID of lower number starts game
@@ -83,8 +97,13 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state) {
 					self.playerMe.otherPlayer.playerTurn = true;
 					self.playerMe.otherPlayer.$save();
 				}
+
+				self.playerMe.thisPlayer.isReady = true;
+				self.playerMe.thisPlayer.$save();
 			}
 		}
+
+console.log($state)
 
 	//////////////////////////////
 	// During game play
