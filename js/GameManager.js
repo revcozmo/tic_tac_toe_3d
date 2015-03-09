@@ -13,22 +13,28 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 		self.lobby 	= $firebase(new Firebase("https://t33d.firebaseio.com/Lobby")).$asObject();
 
 		// When Firebase data is loaded, initialize default values
-		self.lobby.$loaded (function(){
+		self.lobby.$loaded(function(data){
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
 
+			if(self.lobby.numPlayers >= 2) {
+				$state.go('gamespace')
+			}
 			// Init numPlayers if it doesn't exist
-			if(self.lobby.numPlayers === undefined) {
-				self.lobby.numPlayers = 0;
+			else if(self.lobby.numPlayers === undefined || self.lobby.numPlayers === 0) {
+				self.lobby.numPlayers = 1;
 				self.lobby.$save();
+
+				// Create player. Use numPlayers as player's ID
+			 	self.playerMe	= new Player(self.lobby.numPlayers);
 			}
 			else {
 				self.lobby.numPlayers += 1;
 				self.lobby.$save();
+
+				// Create player. Use numPlayers as player's ID
+			 	self.playerMe	= new Player(self.lobby.numPlayers);
 			}
-		
-			// Create player. Use numPlayers as player's ID
-		 	self.playerMe	= new Player(self.lobby.numPlayers);
 		});
 
 
@@ -57,13 +63,23 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 		// Unregister watch functions in Player.js
 		$rootScope.$on('$stateChangeSuccess', function(){
 			console.log("state chaged!")
-			if($state.is('gamespace')) {
+			if($state.is('gamespace') && self.lobby.numPlayers === 2) {
 				console.log("in gamespace");
 				self.playerMe.unwatchP1();
 				self.playerMe.unwatchP2();
 			}
 		});
 
+
+		window.onbeforeunload = function() {
+			self.playerMe.thisPlayer.$remove()
+
+			if(self.lobby.numPlayers < 3 && self.lobby.numPlayers > 0) {
+				self.lobby.numPlayers -= 1;
+				self.lobby.$save();
+			}
+			self.playerMe.thisPlayer.$save();
+		};
 
 	//////////////////////////////
 	// At Start Menu
@@ -268,13 +284,6 @@ function GameManagerFunc($firebase, GameSpace, GameAlgorithm, Player, $state, $r
 				}
 			}
 		}
-
-
-
-		window.onbeforeunload = function() {
-			self.playerMe.thisPlayer.$remove()
-			self.playerMe.thisPlayer.$save();
-		};
 
 	} // End of GameManager
 
