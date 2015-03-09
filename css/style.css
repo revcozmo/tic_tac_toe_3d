@@ -254,11 +254,15 @@ span {
 	font-size: 20px;
 }
 
-
 #loser-selection select {
-	display: block;
+	display: inline-block;
+	color: black;
 	margin: 8px auto;
 	font-size: 25px;
+}
+
+#loser-selection div > h3 {
+	display: inline-block;
 }
 
 

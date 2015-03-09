@@ -52,29 +52,37 @@
         <section id="loser-selection" ng-if="(t3d.theGame.playerMe.thisPlayer.theWinner === false)">
             <h3>Choose board dimensions</h3>
 
-            <select name="Z Spaces" ng-model="t3d.theGame.zSize">
-                <option value="">Choose number of planes</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
+            <div>
+                <h3>Planes</h3>
+                <select name="Z-Spaces" ng-model="t3d.theGame.zSize">
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
 
-            <select name="X Spaces" ng-model="t3d.theGame.xSize">
-                <option value="">Choose width</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
+            <div>
+                <h3>Width</h3>
+                <select name="X-Spaces" ng-model="t3d.theGame.xSize">
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
 
-            <select name="Y Spaces" ng-model="t3d.theGame.ySize">
-                <option value="">Choose length</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
+            <div>
+                <h3>Height</h3>
+                <select name="Y-Spaces" ng-model="t3d.theGame.ySize">
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
 
-            <select name="pts-to-connect" ng-model="t3d.theGame.ptsToConnect">
-                <option value="">Spaces to Connect</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-            </select>
+            <div>
+                <h3>Spaces to Connect</h3>
+                <select name="pts-to-connect" ng-model="t3d.theGame.ptsToConnect">
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
 
             <h4>{{ t3d.theGame.errorMsg }}</h4>
 

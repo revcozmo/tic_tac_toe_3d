@@ -41,6 +41,11 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 		// Functions for Game Over Menu
 		self.playAgain 			= playAgain;
 		self.destroyPlayer 		= destroyPlayer;
+		// Prepopulate select options
+		self.zSize				= 3;
+		self.xSize 				= 3;
+		self.ySize 				= 3;
+		self.ptsToConnect 		= 3;
 
 		function destroyPlayer() {
 			self.playerMe.thisPlayer.$remove();
