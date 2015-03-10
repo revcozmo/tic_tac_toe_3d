@@ -20,4 +20,3 @@ The site currently is simplistic, and hopefully I will be able to add more soon.
 Currently, this game only allows one game to run.  Visitors to the game are not allowed to watch either.
 
 Technologies Used: HTML5/CSS3, JS, AngularJS, Firebase
-
