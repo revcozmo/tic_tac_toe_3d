@@ -13,8 +13,10 @@ function Player($firebaseObject, $state) {
 	var Player = function(numPlayers) {
 		var self = this;
 
+		var playersRef		= new Firebase("https://t33d.firebaseio.com/2Players");
+
 		// Gather Firebase data of two players
-		var checkPlayerRef = new Firebase("https://t33d.firebaseio.com/2Players/player");
+		var checkPlayerRef 	= new Firebase("https://t33d.firebaseio.com/2Players/player");
 		self.checkPlayer 	= $firebaseObject(checkPlayerRef);
 
 		var checkPlayer2Ref = new Firebase("https://t33d.firebaseio.com/2Players/player2");
@@ -81,6 +83,11 @@ function Player($firebaseObject, $state) {
 			});
 		});
 
+		// Handle when one player leaves
+		playersRef.on('child_removed', function(oldChildSnapshot) {
+			playersRef.remove()
+			$state.go('gamefull')
+		});
 
 		// List of functions to initialize Firebase data of player
 		self.initPlayer1FB 	= initPlayer1FB;

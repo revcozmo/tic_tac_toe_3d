@@ -276,7 +276,6 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 				}
 			}
 		}
-
 	} // End of GameManager
 
 	return GameManager;
