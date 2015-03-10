@@ -8,6 +8,7 @@
     </h4>
 
     <section class="player1" ng-class="{'player1-border': !t3d.theGame.playerMe.thisPlayer.playerTurn, 'player1-border-active': t3d.theGame.playerMe.thisPlayer.playerTurn}">
+        <h3>{{ t3d.theGame.playerMe.thisPlayer.playerValue }}</h3>
         <h2>{{ t3d.theGame.playerMe.thisPlayer.name }}</h2>
         <h3>Wins</h3>
         <h4>{{ t3d.theGame.playerMe.thisPlayer.wins }}</h4>
@@ -32,6 +33,7 @@
     </div>
 
     <section class="player2" ng-class="{'player2-border': !t3d.theGame.playerMe.otherPlayer.playerTurn, 'player2-border-active': t3d.theGame.playerMe.otherPlayer.playerTurn}">
+        <h3>{{ t3d.theGame.playerMe.otherPlayer.playerValue }}</h3>
         <h2>{{ t3d.theGame.playerMe.otherPlayer.name }}</h2>
         <h3>Wins</h3>
         <h4>{{ t3d.theGame.playerMe.otherPlayer.wins }}</h4>

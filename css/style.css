@@ -109,6 +109,10 @@ span {
 	color: red;
 }
 
+.player1 h3:first-child, .player2 h3:first-child {
+	font-family: 'tron', 'Helvetica', arial;
+	color: yellow;
+}
 
 .player1, .player2 {
 	color: white;
