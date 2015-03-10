@@ -7,17 +7,20 @@ GameManagerFunc.$inject = ['$firebaseObject', 'GameSpace', 'GameAlgorithm', 'Pla
 function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $state, $rootScope, $window) {
 
 	var GameManager = function() {
+
 		var self	= this;
 
-		// On GameManager instanstiation, Create Firebase object for lobby
-		var ref = new Firebase("https://t33d.firebaseio.com/Lobby");
+		/***********************************
+		* Connecting To Firebase Reference
+		************************************/
+		var ref 	= new Firebase("https://t33d.firebaseio.com/Lobby");
 		self.lobby 	= $firebaseObject(ref);
 
-		self.returnLounge = function(){
-			$window.location.href = '/';
-		};
 
-		// When Firebase data is loaded, initialize default values
+		/**************************************
+		* Run upon Game Manager Instanstiaion
+		**************************************/
+		// When lobby is loaded, set defaults and create Player object
 		self.lobby.$loaded(function(data){
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
@@ -32,7 +35,18 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			self.playerMe	= new Player(self.lobby.numPlayers);
 		});
 
+		// Run when state changes.  Unregister watch functions in Player.js
+		$rootScope.$on('$stateChangeSuccess', function(){
+			if($state.is('gamespace') && self.playerMe.spectator === false) {
+				self.playerMe.unwatchP1();
+				self.playerMe.unwatchP2();
+			}
+		});
 
+
+		/***********************************
+		* Variables and Functions
+		************************************/
 		// Functions for Start Menu
 		self.updatePlayer 		= updatePlayer;
 		self.startGame 			= startGame;
@@ -41,31 +55,21 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
  		self.onSpaceClick 		= onSpaceClick;
 
 		// Functions for Game Over Menu
-		self.playAgain 			= playAgain;
 		self.destroyPlayer 		= destroyPlayer;
+		self.returnLounge 		= returnLounge;
+		self.playAgain 			= playAgain;
+
 		// Prepopulate select options
 		self.zSize				= 3;
 		self.xSize 				= 3;
 		self.ySize 				= 3;
 		self.ptsToConnect 		= 3;
 
-		function destroyPlayer() {
-			self.playerMe.thisPlayerRef.remove();
-		}
 
-		// Run when state changes.
-		// Unregister watch functions in Player.js
-		$rootScope.$on('$stateChangeSuccess', function(){
-			if($state.is('gamespace') && self.playerMe.spectator === false) {
-				self.playerMe.unwatchP1();
-				self.playerMe.unwatchP2();
-			}
-		});
-
-	//////////////////////////////
-	// At Start Menu
-	//////////////////////////////
-		// Function to run when current player clicks on 'play'
+		/****************************
+		* Start Menu Functions
+		****************************/
+		// After player successfully enters a name
 		function updatePlayer() {
 			self.playerMe.thisPlayer.$save();
 		}
@@ -81,12 +85,13 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 						       || self.playerMe.otherPlayer.name === "") {
 				self.nameError	= null;
 				self.waitingPlayer = "Waiting for opponent";
-				self.playerMe.thisPlayer.isReady = true;
-				self.playerMe.thisPlayer.$save();
+
 				// Create GameSpace and GameAlgorithm objects
 				self.gameSpace 			= new GameSpace(3,3,3);
 				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
 
+				self.playerMe.thisPlayer.isReady = true;
+				self.playerMe.thisPlayer.$save();
 			}
 			else {
 				// Player ID of lower number starts game
@@ -99,7 +104,6 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 					self.playerMe.otherPlayer.$save();
 				}
 
-
 				// Create GameSpace and GameAlgorithm objects
 				self.gameSpace 			= new GameSpace(3,3,3);
 				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
@@ -109,10 +113,9 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			}
 		}
 
-	//////////////////////////////
-	// During game play
-	//////////////////////////////
-
+		/****************************
+		* During game play functions
+		*****************************/
 		function onSpaceClick(z, x, y) {
 			// Holds list of booleans of found, winning lines
 			var winner = [];
@@ -187,9 +190,17 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			}//first if
 		}
 
-	//////////////////////////////
-	// For Game Over Menu
-	//////////////////////////////
+
+		/*************************
+		*  For Game Over Menu
+		**************************/
+		function destroyPlayer() {
+			self.playerMe.thisPlayerRef.remove();
+		}
+
+		function returnLounge() {
+			$window.location.href = '/';
+		};
 
 		function playAgain() {
 			// Run if current player is the winner
@@ -270,10 +281,10 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 							self.lobby.waitingMsg = "";
 							self.lobby.$save();
 						}
-					});
-				}
-			}
-		}
+					}); // End of $loaded
+				} // End of else
+			} // End of else if current player is loser
+		} // End of playAgain()
 	} // End of GameManager
 
 	return GameManager;
