@@ -22,8 +22,7 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 			self.lobby.theWinner 		= "";
 			self.lobby.waitingMsg 		= "";
 
-			if(self.lobby.gameFull === undefined) {
-				self.lobby.gameFull = false;
+			if(self.lobby.numPlayers === undefined) {
 				self.lobby.numPlayers = 0;
 			}
 
@@ -110,8 +109,6 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 
 				self.playerMe.thisPlayer.isReady = true;
 				self.playerMe.thisPlayer.$save();
-				self.lobby.gameFull = true;
-				self.lobby.$save();
 			}
 		}
 
