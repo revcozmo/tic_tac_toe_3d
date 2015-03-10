@@ -50,8 +50,7 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 		self.ptsToConnect 		= 3;
 
 		function destroyPlayer() {
-			self.playerMe.thisPlayer.$remove();
-			self.playerMe.thisPlayer.$save();
+			self.playerMe.thisPlayerRef.remove();
 		}
 
 		// Run when state changes.
