@@ -39,34 +39,16 @@ function Player($firebaseObject, $state) {
 		// set current player and opponentdata
 		self.checkPlayer.$loaded(function(data) {
 			self.checkPlayer2.$loaded(function(data) {
-				if(self.checkPlayer.playerID === undefined) {
+				if($state.is('lounge')) {
+					if(self.checkPlayer.playerID === undefined) {
 
-					self.thisPlayer = initPlayer1FB();
-					self.thisPlayerRef = checkPlayerRef;
-					self.thisPlayerConnections = self.checkPlayerConnections;
-					
-					self.otherPlayer = self.checkPlayer2;
-					self.otherPlayerRef = checkPlayer2Ref
-					self.otherPlayerConnections = self.checkPlayer2Connections;
-					instantiateWatch();
-
-					connectedRef.on('value', function(snapshot) {
-						if(snapshot.val()) {
-							self.thisPlayerRef.onDisconnect().remove();
-							self.thisPlayerConnections.set(true);
-						}
-					});
-				}
-				else if(self.checkPlayer2.playerID === undefined) {
-
-						self.thisPlayer = initPlayer2FB();
-						self.thisPlayerConnections = self.checkPlayer2Connections;
-						self.thisPlayerRef	= checkPlayer2Ref;
-
-						self.otherPlayer = self.checkPlayer;
-						self.otherPlayerConnections = self.checkPlayerConnections;
-						self.otherPlayerRef = checkPlayerRef;
-
+						self.thisPlayer = initPlayer1FB();
+						self.thisPlayerRef = checkPlayerRef;
+						self.thisPlayerConnections = self.checkPlayerConnections;
+						
+						self.otherPlayer = self.checkPlayer2;
+						self.otherPlayerRef = checkPlayer2Ref
+						self.otherPlayerConnections = self.checkPlayer2Connections;
 						instantiateWatch();
 
 						connectedRef.on('value', function(snapshot) {
@@ -75,18 +57,40 @@ function Player($firebaseObject, $state) {
 								self.thisPlayerConnections.set(true);
 							}
 						});
-				}
-				else {
-					self.spectator = true;
-					$state.go('gamefull')
+					}
+					else if(self.checkPlayer2.playerID === undefined) {
+
+							self.thisPlayer = initPlayer2FB();
+							self.thisPlayerConnections = self.checkPlayer2Connections;
+							self.thisPlayerRef	= checkPlayer2Ref;
+
+							self.otherPlayer = self.checkPlayer;
+							self.otherPlayerConnections = self.checkPlayerConnections;
+							self.otherPlayerRef = checkPlayerRef;
+
+							instantiateWatch();
+
+							connectedRef.on('value', function(snapshot) {
+								if(snapshot.val()) {
+									self.thisPlayerRef.onDisconnect().remove();
+									self.thisPlayerConnections.set(true);
+								}
+							});
+					}
+					else {
+						self.spectator = true;
+						$state.go('gamefull')
+					}
 				}
 			});
 		});
 
-		// Handle when one player leaves
+		// Handle when one player leaves during a game
 		playersRef.on('child_removed', function(oldChildSnapshot) {
-			playersRef.remove()
-			$state.go('gamefull')
+			if($state.is('gamespace')) {
+				playersRef.remove()
+				$state.go('gameempty')
+			}
 		});
 
 		// List of functions to initialize Firebase data of player

@@ -17,5 +17,9 @@ function MainRouter($stateProvider, $urlRouterProvider) {
         .state('gamefull', {
             url: '/gamefull',
             templateUrl: 'gamefull.html'
+        })
+        .state('gameempty', {
+            url: '/gameempty',
+            templateUrl: 'gameempty.html'
         });
 };

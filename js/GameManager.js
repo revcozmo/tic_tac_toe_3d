@@ -2,9 +2,9 @@ angular
 	.module('ttt3DApp')
 	.factory('GameManager', GameManagerFunc)
 
-GameManagerFunc.$inject = ['$firebaseObject', 'GameSpace', 'GameAlgorithm', 'Player', '$state', '$rootScope'];
+GameManagerFunc.$inject = ['$firebaseObject', 'GameSpace', 'GameAlgorithm', 'Player', '$state', '$rootScope', '$window'];
 
-function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $state, $rootScope) {
+function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $state, $rootScope, $window) {
 
 	var GameManager = function() {
 		var self	= this;
@@ -12,6 +12,10 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 		// On GameManager instanstiation, Create Firebase object for lobby
 		var ref = new Firebase("https://t33d.firebaseio.com/Lobby");
 		self.lobby 	= $firebaseObject(ref);
+
+		self.returnLounge = function(){
+			$window.location.href = '/';
+		};
 
 		// When Firebase data is loaded, initialize default values
 		self.lobby.$loaded(function(data){
