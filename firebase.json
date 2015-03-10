@@ -1,9 +1,0 @@
-{
-  "firebase": "t33d",
-  "public": ".",
-  "ignore": [
-    "firebase.json",
-    "**/.*",
-    "**/node_modules/**"
-  ]
-}
