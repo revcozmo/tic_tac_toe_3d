@@ -139,14 +139,12 @@ function Player($firebaseObject, $state) {
 		function instantiateWatch() {
 		    self.unwatchP1 = self.thisPlayer.$watch(function() {
 		        if(self.thisPlayer.isReady && self.otherPlayer.isReady) {
-		            console.log("p1 watch!")
 		            $state.go('gamespace')
 		        }
 		    });
 
 		    self.unwatchP2 = self.otherPlayer.$watch(function() {
 		        if(self.thisPlayer.isReady && self.otherPlayer.isReady) {
-		            console.log("p2 watch!")
 		            $state.go('gamespace')
 		        }
 		    });

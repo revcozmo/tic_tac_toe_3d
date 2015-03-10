@@ -56,9 +56,7 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 		// Run when state changes.
 		// Unregister watch functions in Player.js
 		$rootScope.$on('$stateChangeSuccess', function(){
-			console.log("state chaged!")
-			if($state.is('gamespace') && self.playerMe.spectator === false) 
-			{
+			if($state.is('gamespace') && self.playerMe.spectator === false) {
 				self.playerMe.unwatchP1();
 				self.playerMe.unwatchP2();
 			}
