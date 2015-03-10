@@ -4,9 +4,11 @@ angular
 
 Player.$inject = ['$firebaseObject', '$state'];
 
-// One Player object contains the data of both 
-// the current player(thisPlayer) and the opponent (otherPlayer).
-// This is done to dyanmically change both players' data in a single turn
+/**
+*  One Player object contains the data of both 
+*  the current player(thisPlayer) and the opponent (otherPlayer).
+*  This is done to dyanmically change both players' data in a single turn.
+**/
 function Player($firebaseObject, $state) {
 	
 	var Player = function(numPlayers) {
@@ -45,9 +47,8 @@ function Player($firebaseObject, $state) {
 		self.updateTies		= updateTies;
 		self.saveToFB 		= saveToFB;		// Save to Firebase
 
-		var instantiateWatch 	= instantiateWatch;
-		var runConnectedRef		= runConnectedRef;
-
+		var instantiateWatch 			= instantiateWatch;
+		var destroyPlayersRefListener	= destroyPlayersRefListener;
 
 		/**********************************************
 		* Run these functions upon Player instantiation
@@ -71,7 +72,8 @@ function Player($firebaseObject, $state) {
 						self.otherPlayerRef = checkPlayer2Ref;
 
 						instantiateWatch();
-						runConnectedRef();
+						destroyPlayersRefListener();
+						self.thisPlayerRef.onDisconnect().remove();	// destroy player's firebase ref on disconnect
 					}
 					else if(checkPlayer2.playerID === undefined) {  // visitor set as player2
 
@@ -82,9 +84,10 @@ function Player($firebaseObject, $state) {
 						self.otherPlayerRef = checkPlayerRef;
 
 						instantiateWatch();
-						runConnectedRef();
+						destroyPlayersRefListener();
+						self.thisPlayerRef.onDisconnect().remove();
 					}
-					else {
+					else {							// game is full. visitor is a spectator
 						self.spectator = true;
 						$state.go('gamefull')		// Redirect to Gamefull screen
 					}
@@ -92,23 +95,10 @@ function Player($firebaseObject, $state) {
 			});
 		});
 
-		/**
-		* Handle when one player leaves during a game.  
-		* Currently, when either player disconnects
-		* its firebase reference is destroyed.  This listener detects the event and redirects
-		* the current player to the Game Over screen.
-		**/
-		playersRef.on('child_removed', function(oldChildSnapshot) {
-			if($state.is('gamespace')) {
-				playersRef.remove()
-				$state.go('gameempty')
-			}
-		});
 
-
-		////////////////////////////////////
-		// Functions Used
-		////////////////////////////////////
+		/*********************
+		*  Functions Used
+		**********************/
 
 		// Initialize player default values
 		function initPlayer1FB() {
@@ -159,13 +149,20 @@ function Player($firebaseObject, $state) {
 		    });
 		}
 
-		function runConnectedRef() {
-			connectedRef.on('value', function(snapshot) {
-				if(snapshot.val()) {
-					self.thisPlayerRef.onDisconnect().remove();		// When player disconnects, destroy data
+		/**
+		* Handle when one player leaves during a game.  
+		* Currently, when either player disconnects, its firebase reference is destroyed.
+		* This listener detects the event and redirects
+		* the current player to the Game Over screen.
+		**/
+		function destroyPlayersRefListener() {
+			playersRef.on('child_removed', function(oldChildSnapshot) {
+				if($state.is('gamespace')) {
+					playersRef.remove()
+					$state.go('gameempty')
 				}
 			});
-		}
+		};
 
 		function toggleTurn() {
 			if(self.thisPlayer.playerTurn)
