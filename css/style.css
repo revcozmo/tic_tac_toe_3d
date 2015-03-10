@@ -137,12 +137,20 @@ span {
 	margin: 20px auto;
 }
 
-.player1 { 
-	border: 3px solid #4AAACA; 
+.player1-border { 
+	border: 3px dashed #4AAACA; 
 }
 
-.player2 { 
-	border: 3px solid #DF740C; 
+.player1-border-active {
+	border: 6px solid #4AAACA;
+}
+
+.player2-border { 
+	border: 3px dashed #DF740C; 
+}
+
+.player2-border-active {
+	border: 6px solid #DF740C;
 }
 
 
