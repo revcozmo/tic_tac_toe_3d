@@ -17,7 +17,7 @@ function GameExtrasFunc() {
 		this.returnDDDArr 	= returnDDDArr;
 
 		function addBlocks(numBlocks) {
-			for(var i = 0; 0 <= numBlocks; i++) {
+			for(var i = 0; i < numBlocks; i++) {
 				do {
 					var zSpace = Math.floor(Math.random() * z);
 					var xSpace = Math.floor(Math.random() * x);
@@ -25,12 +25,12 @@ function GameExtrasFunc() {
 				}
 				while(DDDArr[zSpace][xSpace][ySpace] !== "");
 				
-				DDDArr[zSpace][xSpace][ySpace] = 'block';
+				DDDArr[zSpace][xSpace][ySpace] = 'bk';
 			}
 		}
 
 		function addBombs(numBombs) {
-			for(var i = 0; 0 <= numBombs; i++) {
+			for(var i = 0; i < numBombs; i++) {
 				do {
 					var zSpace = Math.floor(Math.random() * z);
 					var xSpace = Math.floor(Math.random() * x);

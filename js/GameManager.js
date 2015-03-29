@@ -2,9 +2,9 @@ angular
 	.module('ttt3DApp')
 	.factory('GameManager', GameManagerFunc)
 
-GameManagerFunc.$inject = ['$firebaseObject', 'GameSpace', 'GameAlgorithm', 'Player', '$state', '$rootScope', '$window'];
+GameManagerFunc.$inject = ['$firebaseObject', 'GameSpace', 'GameAlgorithm', 'Player', 'GameExtras', '$state', '$rootScope', '$window'];
 
-function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $state, $rootScope, $window) {
+function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, GameExtras, $state, $rootScope, $window) {
 
 	var GameManager = function() {
 
@@ -106,6 +106,9 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 
 				// Create GameSpace and GameAlgorithm objects
 				self.gameSpace 			= new GameSpace(3,3,3);
+				self.gameExtras 		= new GameExtras(self.gameSpace.theGameSpace.gameSpace, 3, 3, 3);
+				self.gameExtras.addBlocks(1);
+				self.gameSpace.theGameSpace.$save();
 				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
 
 				self.playerMe.thisPlayer.isReady = true;
@@ -251,7 +254,11 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, $sta
 					self.gameSpace.theGameSpace.$loaded(function() {
 						// Recreate board and algorithm
 						self.gameSpace 			= new GameSpace(z,x,y);
+						self.gameExtras 		= new GameExtras(self.gameSpace.theGameSpace, z, x, y);
+						self.gameExtras.addBlocks(3);
+						self.gameSpace.theGameSpace.$save();
 						self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, z, x, y, ptsToConnect);
+
 
 						// Reset game settings error message
 						self.errorMsg = null;
