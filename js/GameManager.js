@@ -88,6 +88,10 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, Game
 
 				// Create GameSpace and GameAlgorithm objects
 				self.gameSpace 			= new GameSpace(3,3,3);
+				self.gameExtras 		= new GameExtras(self.gameSpace.theGameSpace.gameSpace, 3, 3, 3);
+				self.gameExtras.addBlocks(2);
+				self.gameSpace.theGameSpace.$save();
+
 				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
 
 				self.playerMe.thisPlayer.isReady = true;
@@ -107,7 +111,7 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, Game
 				// Create GameSpace and GameAlgorithm objects
 				self.gameSpace 			= new GameSpace(3,3,3);
 				self.gameExtras 		= new GameExtras(self.gameSpace.theGameSpace.gameSpace, 3, 3, 3);
-				self.gameExtras.addBlocks(1);
+				self.gameExtras.addBlocks(2);
 				self.gameSpace.theGameSpace.$save();
 				self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, 3, 3, 3, 3);
 
@@ -254,11 +258,12 @@ function GameManagerFunc($firebaseObject, GameSpace, GameAlgorithm, Player, Game
 					self.gameSpace.theGameSpace.$loaded(function() {
 						// Recreate board and algorithm
 						self.gameSpace 			= new GameSpace(z,x,y);
-						self.gameExtras 		= new GameExtras(self.gameSpace.theGameSpace, z, x, y);
-						self.gameExtras.addBlocks(3);
-						self.gameSpace.theGameSpace.$save();
-						self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, z, x, y, ptsToConnect);
+						self.gameExtras 		= new GameExtras(self.gameSpace.theGameSpace.gameSpace, z, x, y);
 
+						self.gameExtras.addBlocks((z * x * y) / 8);
+						self.gameSpace.theGameSpace.$save();
+
+						self.gameAlgorithm 		= new GameAlgorithm(self.gameSpace, z, x, y, ptsToConnect);
 
 						// Reset game settings error message
 						self.errorMsg = null;
